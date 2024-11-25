@@ -28,8 +28,25 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'danger' => Color::Red,
+                'gray' => Color::Slate,
+                'info' => Color::Blue,
+                'primary' => Color::Orange,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
             ])
+        
+            ->navigationGroups([
+                'User Management',
+                'System Management',
+                'Academic Management',
+                'Campus Management',
+                'Program Management',
+            ])
+
+            ->font('Poppins')
+            ->brandLogo(asset('images/bu_logo.png'))
+            ->favicon(asset('images/logo2.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
