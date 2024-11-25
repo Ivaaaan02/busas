@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('colleges', function (Blueprint $table) {
             $table->id();
             $table->foreignId('campus_id')->constrained('campuses');
-            $table->string('college_name')->nullable();
+            $table->string('college_name');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
