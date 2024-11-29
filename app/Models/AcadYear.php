@@ -8,28 +8,23 @@ use App\Traits\CreatedUpdatedBy;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Campus extends Model
+class AcadYear extends Model
 {
     use HasFactory;
     use SoftDeletes;
     use CreatedUpdatedBy;
 
-    protected $table = 'campuses';
+    protected $table = 'acad_years';
 
     protected $fillable = [
-        'campus_name',
-        'campus_address',
-        'isSatelliteCampus',
+        'year',
+        'start_date',
+        'end_date',
         'created_by',
         'updated_by',
     ];
 
-    public function College() {
-        return $this->hasMany('College', 'campus_id');
+    public function AcadTerm() {
+        return $this->hasMany('AcadTerm', 'acad_year_id');
     }
-
-    public function Program() {
-        return $this->hasMany('Program', 'program_id');
-    }
-    
 }

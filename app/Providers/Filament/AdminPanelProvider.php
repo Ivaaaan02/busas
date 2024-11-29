@@ -39,8 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'User Management',
                 'System Management',
-                'Academic Management',
                 'Campus Management',
+                'Academic Management',
                 'Program Management',
             ])
 
