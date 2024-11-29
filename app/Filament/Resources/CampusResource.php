@@ -52,6 +52,7 @@ class CampusResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('isSatelliteCampus')
+                    ->label('Satellite Campus')
                     ->boolean()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

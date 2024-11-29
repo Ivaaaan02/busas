@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AcadTermResource\Pages;
 use App\Filament\Resources\AcadTermResource\RelationManagers;
 use App\Models\AcadTerm;
+use App\Models\AcadYear;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -35,18 +36,33 @@ class AcadTermResource extends Resource
                     ->description("Please put the academic term's details here.")
                     ->schema([
                         Forms\Components\Select::make('acad_year_id')
+                            ->label('Academic Year')
+                            ->relationship('AcadYear', 'year') 
+                            ->reactive()
                             ->required()
-                            ->searchable()
-                            ->preload()
-                            ->relationship(name: 'AcadYear', titleAttribute: 'year'),
+                            ->afterStateUpdated(function (callable $set, callable $get) {
+                                $academicYear = AcadYear::find($get('acad_year_id'));
+                                if ($academicYear) {
+                                    $year = substr($academicYear->year, -4); 
+                                    $options = [
+                                        '1st Semester' => '1st Semester',
+                                        '2nd Semester' => '2nd Semester',
+                                        'Summer' => 'Summer',
+                                        "Mid Year $year" => "Mid Year $year",
+                                    ];
+                                    $set('acad_term_options', $options); 
+                                }
+                            }),
+
                         Forms\Components\Select::make('acad_term')
-                            ->required()
-                            ->options([
+                            ->label('Academic Term')
+                            ->options(fn (callable $get) => $get('acad_term_options') ?? [
                                 '1st Semester' => '1st Semester',
                                 '2nd Semester' => '2nd Semester',
                                 'Summer' => 'Summer',
-                                'Mid Year' => 'Mid Year',
+                                'Mid Year' => 'Mid Year', 
                             ])
+                            ->required(),
                     ])->columns(2)
             ]);
     }
@@ -56,9 +72,11 @@ class AcadTermResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('AcadYear.year')
+                    ->label('Academic Year')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('acad_term')
+                    ->label('Academic Term')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

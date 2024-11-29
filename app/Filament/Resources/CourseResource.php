@@ -39,54 +39,59 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Curriculum Information')
-                ->description("Please put the curriculum's details here.")
+                Forms\Components\Section::make('Course Information')
+                ->description("Please put the course's details here.")
                 ->schema([
-                Forms\Components\Select::make('campus_id')
-                    ->label('Campus')
-                    ->options(Campus::all()->pluck('campus_name', 'id'))
-                    ->reactive()
-                    ->afterStateUpdated(function (Set $set) {
-                        $set('college_id', null);
-                        $set('program_id', null);
-                        $set('program_major_id', null);
-                    })
-                    ->required(),
-                Forms\Components\Select::make('college_id')
-                    ->label('College')
-                    ->visible(fn (Get $get) => Campus::query()->where([
-                        'id' => $get('campus_id'),
-                        'isSatelliteCampus' => 0
-                    ])->exists())
-                    ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('program_id')
-                    ->label('Program')
-                    ->options(fn (Get $get): Collection => Program::query()
-                        ->where('college_id', $get('college_id'))
-                        ->orWhere('campus_id', $get('campus_id'))
-                        ->pluck('program_name', 'id'))
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('program_major_id')
-                    ->label('Program Major')
-                    ->options(fn (Get $get): Collection => ProgramMajor::query()
-                        ->where('program_id', $get('program_id'))
-                        ->pluck('program_major_name', 'id'))
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('descriptive_title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('course_code')
-                    ->required()
-                    ->maxLength(20),
-                Forms\Components\TextInput::make('course_unit')
-                    ->required()
-                    ->maxLength(5),
-                ])->columns(3)
+                    Forms\Components\Select::make('acad_term_id')
+                        ->required()
+                        ->searchable()
+                        ->preload()
+                        ->relationship(name: 'AcadTerm', titleAttribute: 'acad_term'),
+                    Forms\Components\Select::make('campus_id')
+                        ->label('Campus')
+                        ->options(Campus::all()->pluck('campus_name', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('college_id', null);
+                            $set('program_id', null);
+                            $set('program_major_id', null);
+                        })
+                        ->required(),
+                    Forms\Components\Select::make('college_id')
+                        ->label('College')
+                        ->visible(fn (Get $get) => Campus::query()->where([
+                            'id' => $get('campus_id'),
+                            'isSatelliteCampus' => 0
+                        ])->exists())
+                        ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Select::make('program_id')
+                        ->label('Program')
+                        ->options(fn (Get $get): Collection => Program::query()
+                            ->where('college_id', $get('college_id'))
+                            ->orWhere('campus_id', $get('campus_id'))
+                            ->pluck('program_name', 'id'))
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Select::make('program_major_id')
+                        ->label('Program Major')
+                        ->options(fn (Get $get): Collection => ProgramMajor::query()
+                            ->where('program_id', $get('program_id'))
+                            ->pluck('program_major_name', 'id'))
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\TextInput::make('descriptive_title')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('course_code')
+                        ->required()
+                        ->maxLength(20),
+                    Forms\Components\TextInput::make('course_unit')
+                        ->required()
+                        ->maxLength(5),
+                    ])->columns(2)
             ]);
     }
 
@@ -94,6 +99,10 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('acadterm.acad_term')
+                    ->label('Academic Term')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('program.program_name')
                     ->numeric()
                     ->sortable(),

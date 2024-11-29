@@ -25,7 +25,7 @@ class AcadTerm extends Model
 
     public function AcadYear()
     {
-        return $this->belongsTo(AcadYear::class);
+        return $this->belongsTo(AcadYear::class, 'acad_year_id');
     }
 }
 

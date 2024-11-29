@@ -35,6 +35,7 @@ class AcadYearResource extends Resource
                     ->description("Please put the academic year's details here.")
                     ->schema([
                         Forms\Components\TextInput::make('year')
+                            ->label('Academic Year')
                             ->required()
                             ->maxLength(11),
                         Forms\Components\DatePicker::make('start_date')
@@ -54,6 +55,7 @@ class AcadYearResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('year')
+                    ->label('Academic Year')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->date()
