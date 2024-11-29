@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAcadYear extends CreateRecord
 {
     protected static string $resource = AcadYearResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }

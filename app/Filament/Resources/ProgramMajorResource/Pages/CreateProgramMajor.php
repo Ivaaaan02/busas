@@ -14,4 +14,9 @@ class CreateProgramMajor extends CreateRecord
 {
     protected static string $resource = ProgramMajorResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
 }
