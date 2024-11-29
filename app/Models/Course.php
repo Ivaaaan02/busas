@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Traits\CreatedUpdatedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Course extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+    use CreatedUpdatedBy; 
+
+    protected $table = 'courses';
+
+    protected $fillable = [
+        'descriptive_title',
+        'course_code',
+        'course_unit',
+        'program_id',
+        'program_major_id',
+        'created_by',
+        'updated_by',
+    ];
+    
+    public function Program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function ProgramMajor()
+    {
+        return $this->belongsTo(ProgramMajor::class);
+    }
+}

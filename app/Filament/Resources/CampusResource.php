@@ -37,9 +37,6 @@ class CampusResource extends Resource
                     Forms\Components\TextInput::make('campus_name')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('campus_address')
-                        ->required()
-                        ->maxLength(255),
                     Forms\Components\Toggle::make('isSatelliteCampus')
                         ->required(),
                 ])->columns(2)
@@ -52,9 +49,6 @@ class CampusResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('campus_name')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('campus_address')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('isSatelliteCampus')

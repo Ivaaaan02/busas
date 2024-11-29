@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('campus_id')->constrained('campuses');
             $table->string('college_name');
+            $table->string('college_address');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();

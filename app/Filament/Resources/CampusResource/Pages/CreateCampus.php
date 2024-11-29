@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCampus extends CreateRecord
 {
     protected static string $resource = CampusResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
 }

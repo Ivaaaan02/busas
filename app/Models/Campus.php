@@ -18,11 +18,19 @@ class Campus extends Model
 
     protected $fillable = [
         'campus_name',
-        'campus_address',
         'isSatelliteCampus',
         'created_by',
         'updated_by',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function($campus){
+            if($campus->isSatelliteCampus){
+                $campus->campus_name = strtoupper($campus->campus_name);
+            }
+        });
+    }
 
     public function College() {
         return $this->hasMany('College', 'campus_id');

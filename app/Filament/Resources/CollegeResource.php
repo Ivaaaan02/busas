@@ -45,6 +45,17 @@ class CollegeResource extends Resource
                     Forms\Components\TextInput::make('college_name')
                         ->required()
                         ->maxLength(255),
+                    Forms\Components\Select::make('college_address')
+                        ->required()
+                        ->options([
+                            'Legazpi City' => 'Legazpi City',
+                            'Daraga, Albay' => 'Daraga, Albay',
+                            'Guinobatan, Albay' => 'Guinobatan, Albay',
+                            'Polangui, Albay' => 'Polangui, Albay',
+                            'Tabaco City' => 'Tabaco City',
+                            'Gubat, Sorsogon' => 'Gubat, Sorsogon',
+                        ])
+                        ->columnSpanFull(),
                 ])->columns(2)
             ]);
     }
@@ -56,6 +67,9 @@ class CollegeResource extends Resource
                 Tables\Columns\TextColumn::make('Campus.campus_name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('college_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('college_address')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

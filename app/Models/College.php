@@ -17,10 +17,18 @@ class College extends Model
 
     protected $fillable = [
         'college_name',
+        'college_address',
         'campus_id',
         'created_by',
         'updated_by',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function($college){
+                $college->college_name = strtoupper($college->college_name);
+        });
+    }
 
     public function Campus()
     {
