@@ -117,7 +117,7 @@ class CollegeResource extends Resource
     {
         return [
             'index' => Pages\ListColleges::route('/'),
-            'create' => Pages\CreateCollege::route('/create'),
+            // 'create' => Pages\CreateCollege::route('/create'),
             'view' => Pages\ViewCollege::route('/{record}'),
             'edit' => Pages\EditCollege::route('/{record}/edit'),
         ];

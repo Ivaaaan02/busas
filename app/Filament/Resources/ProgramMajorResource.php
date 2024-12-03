@@ -47,7 +47,7 @@ class ProgramMajorResource extends Resource
                                 $set('program_id', null);
                             })
                             ->required(),
-                            Forms\Components\Select::make('college_id')
+                        Forms\Components\Select::make('college_id')
                             ->label('College')
                             ->visible(fn (Get $get) => Campus::query()->where([
                                 'id' => $get('campus_id'),

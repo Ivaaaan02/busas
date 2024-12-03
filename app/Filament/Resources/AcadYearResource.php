@@ -109,7 +109,7 @@ class AcadYearResource extends Resource
     {
         return [
             'index' => Pages\ListAcadYears::route('/'),
-            'create' => Pages\CreateAcadYear::route('/create'),
+            // 'create' => Pages\CreateAcadYear::route('/create'),
             'view' => Pages\ViewAcadYear::route('/{record}'),
             'edit' => Pages\EditAcadYear::route('/{record}/edit'),
         ];

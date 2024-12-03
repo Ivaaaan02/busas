@@ -124,7 +124,7 @@ class AcadTermResource extends Resource
     {
         return [
             'index' => Pages\ListAcadTerms::route('/'),
-            'create' => Pages\CreateAcadTerm::route('/create'),
+            // 'create' => Pages\CreateAcadTerm::route('/create'),
             'view' => Pages\ViewAcadTerm::route('/{record}'),
             'edit' => Pages\EditAcadTerm::route('/{record}/edit'),
         ];

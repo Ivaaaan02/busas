@@ -17,16 +17,16 @@ class Curriculum extends Model
 
     protected $fillable = [
         'curriculum_name',
-        'acad_year_id',
+        'acad_term_id',
         'program_id',
         'program_major_id',
         'created_by',
         'updated_by',
     ];
 
-    public function AcadYear()
+    public function AcadTerm()
     {
-        return $this->belongsTo(AcadYear::class);
+        return $this->belongsTo(AcadTerm::class);
     }
     
     public function Program()
@@ -37,5 +37,9 @@ class Curriculum extends Model
     public function ProgramMajor()
     {
         return $this->belongsTo(ProgramMajor::class);
+    }
+
+    public function Course() {
+        return $this->hasMany('Course', 'curriculum_id');
     }
 }

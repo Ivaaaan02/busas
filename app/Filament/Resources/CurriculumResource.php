@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CurriculumResource\Pages;
 use App\Filament\Resources\CurriculumResource\RelationManagers;
 use App\Models\Curriculum;
+use App\Models\AcadYear;
+use App\Models\AcadTerm;
 use App\Models\Campus;
 use App\Models\College;
 use App\Models\ProgramMajor;
@@ -46,7 +48,18 @@ class CurriculumResource extends Resource
                         ->required()
                         ->searchable()
                         ->preload()
-                        ->relationship(name: 'AcadYear', titleAttribute: 'year'),
+                        ->live()
+                        ->label('Academic Year')
+                        ->options(AcadYear::pluck('year', 'id'))
+                        ->searchable(),
+                    Forms\Components\Select::make('acad_term_id')
+                        ->label('Academic Term')
+                        ->options(fn (Get $get): Collection => AcadTerm::query()
+                            ->where('acad_year_id', $get('acad_year_id'))
+                            ->pluck('acad_term', 'id'))
+                        ->required()
+                        ->searchable()
+                        ->preload(),
                     Forms\Components\Select::make('campus_id')
                         ->label('Campus')
                         ->options(Campus::all()->pluck('campus_name', 'id'))
@@ -93,9 +106,8 @@ class CurriculumResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('acadyear.year')
-                    ->label('Academic Year')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('acadterm.acad_term')
+                    ->label('Academic Term')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('program.program_name')
                     ->numeric()

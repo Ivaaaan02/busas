@@ -129,7 +129,7 @@ class ProgramResource extends Resource
     {
         return [
             'index' => Pages\ListPrograms::route('/'),
-            'create' => Pages\CreateProgram::route('/create'),
+            // 'create' => Pages\CreateProgram::route('/create'),
             'view' => Pages\ViewProgram::route('/{record}'),
             'edit' => Pages\EditProgram::route('/{record}/edit'),
         ];

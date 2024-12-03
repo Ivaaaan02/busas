@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('acad_term_id')->constrained('acad_terms');
             $table->foreignId('program_id')->constrained('programs');
             $table->foreignId('program_major_id')->nullable()->constrained('program_majors');
+            $table->foreignId('curriculum_id')->constrained('curricula');
             $table->string('descriptive_title');
             $table->string('course_code', 20);
             $table->string('course_unit', 5);

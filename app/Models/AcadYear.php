@@ -52,6 +52,6 @@ class AcadYear extends Model
     }
 
     public function AcadTerm() {
-        return $this->hasMany('AcadTerm', 'acad_year_id');
+        return $this->hasMany(AcadTerm::class, 'acad_year_id');
     }
 }

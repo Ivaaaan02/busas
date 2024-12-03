@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('curricula', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('acad_year_id')->constrained('acad_years');
+            $table->foreignId('acad_term_id')->constrained('acad_terms');
             $table->foreignId('program_id')->constrained('programs');
             $table->foreignId('program_major_id')->nullable()->constrained('program_majors');
             $table->string('curriculum_name');

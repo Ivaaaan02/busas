@@ -9,6 +9,9 @@ use App\Models\Campus;
 use App\Models\College;
 use App\Models\ProgramMajor;
 use App\Models\Program;
+use App\Models\Curriculum;
+use App\Models\AcadYear;
+use App\Models\AcadTerm;
 use Filament\Forms;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -42,11 +45,26 @@ class CourseResource extends Resource
                 Forms\Components\Section::make('Course Information')
                 ->description("Please put the course's details here.")
                 ->schema([
-                    Forms\Components\Select::make('acad_term_id')
+                    Forms\Components\Select::make('acad_year_id')
                         ->required()
                         ->searchable()
                         ->preload()
-                        ->relationship(name: 'AcadTerm', titleAttribute: 'acad_term'),
+                        ->live()
+                        ->label('Academic Year')
+                        ->options(AcadYear::pluck('year', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('acad_term_id', null);
+                        })
+                        ->searchable(),
+                    Forms\Components\Select::make('acad_term_id')
+                        ->label('Academic Term')
+                        ->options(fn (Get $get): Collection => AcadTerm::query()
+                            ->where('acad_year_id', $get('acad_year_id'))
+                            ->pluck('acad_term', 'id'))
+                        ->required()
+                        ->searchable()
+                        ->preload(),
                     Forms\Components\Select::make('campus_id')
                         ->label('Campus')
                         ->options(Campus::all()->pluck('campus_name', 'id'))
@@ -55,6 +73,7 @@ class CourseResource extends Resource
                             $set('college_id', null);
                             $set('program_id', null);
                             $set('program_major_id', null);
+                            $set('curriculum_id', null);
                         })
                         ->required(),
                     Forms\Components\Select::make('college_id')
@@ -72,6 +91,11 @@ class CourseResource extends Resource
                             ->where('college_id', $get('college_id'))
                             ->orWhere('campus_id', $get('campus_id'))
                             ->pluck('program_name', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('program_major_id', null);
+                            $set('curriculum_id', null);
+                        })
                         ->required()
                         ->searchable()
                         ->preload(),
@@ -80,6 +104,20 @@ class CourseResource extends Resource
                         ->options(fn (Get $get): Collection => ProgramMajor::query()
                             ->where('program_id', $get('program_id'))
                             ->pluck('program_major_name', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('curriculum_id', null);
+                        })
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Select::make('curriculum_id')
+                        ->label('Curriculum')
+                        // ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name'),
+                        ->options(fn (Get $get): Collection => Curriculum::query()
+                            ->where('program_id', $get('program_id'))
+                            ->Where('program_major_id', $get('program_major_id'))
+                            ->pluck('curriculum_name', 'id'))
+                        ->required()
                         ->searchable()
                         ->preload(),
                     Forms\Components\TextInput::make('descriptive_title')

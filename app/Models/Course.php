@@ -22,6 +22,7 @@ class Course extends Model
         'acad_term_id',
         'program_id',
         'program_major_id',
+        'curriculum_id',
         'created_by',
         'updated_by',
     ];
@@ -38,5 +39,10 @@ class Course extends Model
     public function ProgramMajor()
     {
         return $this->belongsTo(ProgramMajor::class);
+    }
+
+    public function Curriculum()
+    {
+        return $this->belongsTo(Curriculum::class);
     }
 }

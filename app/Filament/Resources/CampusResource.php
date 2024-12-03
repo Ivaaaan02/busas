@@ -101,7 +101,7 @@ class CampusResource extends Resource
     {
         return [
             'index' => Pages\ListCampuses::route('/'),
-            'create' => Pages\CreateCampus::route('/create'),
+            // 'create' => Pages\CreateCampus::route('/create'),
             'view' => Pages\ViewCampus::route('/{record}'),
             'edit' => Pages\EditCampus::route('/{record}/edit'),
         ];
