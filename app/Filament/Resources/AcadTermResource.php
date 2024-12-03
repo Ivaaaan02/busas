@@ -47,7 +47,7 @@ class AcadTermResource extends Resource
                                     $options = [
                                         '1st Semester' => '1st Semester',
                                         '2nd Semester' => '2nd Semester',
-                                        'Summer' => 'Summer',
+                                        "Summer $year" => "Summer $year",
                                         "Mid Year $year" => "Mid Year $year",
                                     ];
                                     $set('acad_term_options', $options); 
