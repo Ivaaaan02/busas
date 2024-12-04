@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CreatedUpdatedBy;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Campus extends Model
 {
@@ -28,6 +29,9 @@ class Campus extends Model
         static::saving(function($campus){
             if($campus->isSatelliteCampus){
                 $campus->campus_name = strtoupper($campus->campus_name);
+                DB::table('colleges')
+                ->where('campus_id', $campus->id)
+                ->update(['college_name' => $campus->campus_name]);
             }
         });
     }

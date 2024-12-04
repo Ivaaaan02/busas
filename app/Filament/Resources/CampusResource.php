@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CampusResource\Pages;
 use App\Filament\Resources\CampusResource\RelationManagers;
 use App\Models\Campus;
+use App\Models\College;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -38,9 +39,27 @@ class CampusResource extends Resource
                         ->required()
                         ->maxLength(255),
                     Forms\Components\Toggle::make('isSatelliteCampus')
-                        ->required(),
-                ])->columns(2)
-
+                        ->required()
+                        ->live(),
+                ])->columns(2),
+                // Forms\Components\Section::make('College Information')
+                // ->description("Please put the college's details here.")
+                // ->schema([
+                //     Forms\Components\Repeater::make('college_id')
+                //         ->relationship('colleges')
+                //         ->schema([
+                //             Forms\Components\TextInput::make('college_name')
+                //                 ->required()
+                //                 ->reactive()
+                //                 ->afterStateUpdated(function (callable $set, $state, $context){
+                //                     if($context->isSatelliteCampus){
+                //                         $set('college_name', $state);
+                //                     }
+                //                 }),
+                //             Forms\Components\TextInput::make('college_address')
+                //                 ->required(),
+                //         ])
+                // ])
             ]);
     }
 

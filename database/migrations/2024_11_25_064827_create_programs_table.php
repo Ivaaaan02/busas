@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('college_id')->nullable()->constrained('colleges');
+            $table->foreignId('college_id')->constrained('colleges');
             $table->foreignId('campus_id')->constrained('campuses');
             $table->string('program_name');
             $table->string('program_abbreviation', 20);
