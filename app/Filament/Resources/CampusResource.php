@@ -5,11 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CampusResource\Pages;
 use App\Filament\Resources\CampusResource\RelationManagers;
 use App\Models\Campus;
-use App\Models\College;
-use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -32,34 +37,61 @@ class CampusResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Campus Information')
+                Section::make('Campus Information')
                 ->description("Please put the campus's details here.")
                 ->schema([
-                    Forms\Components\TextInput::make('campus_name')
+                    TextInput::make('campus_name')
                         ->required()
-                        ->maxLength(255),
-                    Forms\Components\Toggle::make('isSatelliteCampus')
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, callable $get){
+                            if($get('isSatelliteCampus')){
+                                $set('colleges', collect($get('colleges'))->map(function ($college) use ($get){
+                                    return array_merge($college, ['college_name' =>$get('campus_name')]);
+                                })->toArray());
+                            }
+                        }),
+                    Toggle::make('isSatelliteCampus')
                         ->required()
-                        ->live(),
+                        ->reactive()
+                        ->live()
+                        ->afterStateUpdated(function (callable $set, callable $get, $state) {
+                            if ($state) {
+                                $colleges = collect($get('colleges'))->map(function ($college) use ($get) {
+                                    $college['college_name'] = $get('campus_name');
+                                    return $college;
+                                });
+                                $set('colleges', $colleges->toArray());
+                            } else {
+                                $colleges = collect($get('colleges'))->map(function ($college) {
+                                    unset($college['college_name']);
+                                    return $college;
+                                });
+                                $set('colleges', $colleges->toArray());
+                            }
+                        }),
                 ])->columns(2),
-                // Forms\Components\Section::make('College Information')
-                // ->description("Please put the college's details here.")
-                // ->schema([
-                //     Forms\Components\Repeater::make('college_id')
-                //         ->relationship('colleges')
-                //         ->schema([
-                //             Forms\Components\TextInput::make('college_name')
-                //                 ->required()
-                //                 ->reactive()
-                //                 ->afterStateUpdated(function (callable $set, $state, $context){
-                //                     if($context->isSatelliteCampus){
-                //                         $set('college_name', $state);
-                //                     }
-                //                 }),
-                //             Forms\Components\TextInput::make('college_address')
-                //                 ->required(),
-                //         ])
-                // ])
+                Section::make('College Information')
+                ->description("Please put the college's details here.")
+                ->schema([
+                    Repeater::make('colleges')
+                        ->relationship('College')
+                        ->schema([
+                            TextInput::make('college_name')
+                                ->required()
+                                ->maxLength(255),
+                            Select::make('college_address')
+                                ->required()
+                                ->options([
+                                    'Legazpi City' => 'Legazpi City',
+                                    'Daraga, Albay' => 'Daraga, Albay',
+                                    'Guinobatan, Albay' => 'Guinobatan, Albay',
+                                    'Polangui, Albay' => 'Polangui, Albay',
+                                    'Tabaco City' => 'Tabaco City',
+                                    'Gubat, Sorsogon' => 'Gubat, Sorsogon',
+                                ])
+                            ])
+                        ->columnSpanFull(),
+                ])->columns(2)
             ]);
     }
 
@@ -67,30 +99,30 @@ class CampusResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('campus_name')
+                TextColumn::make('campus_name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\IconColumn::make('isSatelliteCampus')
+                IconColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
                     ->boolean()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

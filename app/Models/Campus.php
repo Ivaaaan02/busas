@@ -37,7 +37,7 @@ class Campus extends Model
     }
 
     public function College() {
-        return $this->hasMany('College', 'campus_id');
+        return $this->hasMany(College::class);
     }
 
     public function Program() {
