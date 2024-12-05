@@ -5,13 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CollegeResource\Pages;
 use App\Filament\Resources\CollegeResource\RelationManagers;
 use App\Models\College;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Components\Select;
-use Filament\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -34,18 +35,18 @@ class CollegeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('College Information')
+                Section::make('College Information')
                 ->description("Please put the college's details here.")
                 ->schema([
-                    Forms\Components\Select::make('campus_id')
+                    Select::make('campus_id')
                         ->required()
                         ->searchable()
                         ->preload()
                         ->relationship(name: 'Campus', titleAttribute: 'campus_name'),
-                    Forms\Components\TextInput::make('college_name')
+                    TextInput::make('college_name')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\Select::make('college_address')
+                    Select::make('college_address')
                         ->required()
                         ->options([
                             'Legazpi City' => 'Legazpi City',
@@ -64,30 +65,30 @@ class CollegeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('Campus.campus_name')
+                TextColumn::make('Campus.campus_name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('college_name')
+                TextColumn::make('college_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('college_address')
+                TextColumn::make('college_address')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

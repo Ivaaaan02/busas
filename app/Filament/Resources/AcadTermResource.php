@@ -4,12 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AcadTermResource\Pages;
 use App\Filament\Resources\AcadTermResource\RelationManagers;
-use App\Models\AcadTerm;
 use App\Models\AcadYear;
-use Filament\Forms;
+use App\Models\AcadTerm;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -32,10 +34,10 @@ class AcadTermResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Academic Term Information')
+                Section::make('Academic Term Information')
                     ->description("Please put the academic term's details here.")
                     ->schema([
-                        Forms\Components\Select::make('acad_year_id')
+                        Select::make('acad_year_id')
                             ->label('Academic Year')
                             ->relationship('AcadYear', 'year') 
                             ->reactive()
@@ -54,7 +56,7 @@ class AcadTermResource extends Resource
                                 }
                             }),
 
-                        Forms\Components\Select::make('acad_term')
+                        Select::make('acad_term')
                             ->label('Academic Term')
                             ->options(fn (callable $get) => $get('acad_term_options') ?? [
                                 '1st Semester' => '1st Semester',
@@ -71,30 +73,30 @@ class AcadTermResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('AcadYear.year')
+                TextColumn::make('AcadYear.year')
                     ->label('Academic Year')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('acad_term')
+                TextColumn::make('acad_term')
                     ->label('Academic Term')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

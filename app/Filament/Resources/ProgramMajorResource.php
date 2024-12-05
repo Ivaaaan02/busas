@@ -49,10 +49,6 @@ class ProgramMajorResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('college_id')
                             ->label('College')
-                            ->visible(fn (Get $get) => Campus::query()->where([
-                                'id' => $get('campus_id'),
-                                'isSatelliteCampus' => 0
-                            ])->exists())
                             ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
                             ->searchable()
                             ->preload(),

@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AcadYearResource\Pages;
 use App\Filament\Resources\AcadYearResource\RelationManagers;
 use App\Models\AcadYear;
-use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,18 +34,18 @@ class AcadYearResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Academic Year Information')
+                Section::make('Academic Year Information')
                     ->description("Please put the academic year's details here.")
                     ->schema([
-                        Forms\Components\TextInput::make('year')
+                        TextInput::make('year')
                             ->label('Academic Year')
                             ->required()
                             ->maxLength(11),
-                        Forms\Components\DatePicker::make('start_date')
+                        DatePicker::make('start_date')
                             ->required()
                             ->native(false)
                             ->displayFormat('d/m/Y'),
-                        Forms\Components\DatePicker::make('end_date')
+                        DatePicker::make('end_date')
                             ->required()
                             ->native(false)
                             ->displayFormat('d/m/Y'),
@@ -54,32 +57,32 @@ class AcadYearResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('year')
+                TextColumn::make('year')
                     ->label('Academic Year')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('start_date')
+                TextColumn::make('start_date')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('end_date')
+                TextColumn::make('end_date')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+               TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

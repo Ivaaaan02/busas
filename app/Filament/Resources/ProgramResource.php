@@ -4,20 +4,25 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProgramResource\Pages;
 use App\Filament\Resources\ProgramResource\RelationManagers;
-use App\Models\Program;
-use App\Models\College;
 use App\Models\Campus;
-use Filament\Forms;
+use App\Models\College;
+use App\Models\Program;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
+use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Collection;
 
 
 class ProgramResource extends Resource
@@ -38,68 +43,78 @@ class ProgramResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Program Information')
+                Section::make('Program Information')
                     ->description("Please put the program's details here.")
                     ->schema([
-                        Forms\Components\Select::make('campus_id')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->relationship(name: 'Campus', titleAttribute: 'campus_name')
-                            ->afterStateUpdated(function(Set $set){
-                                $set('college_id', null);
-                            }),
-                        Forms\Components\Select::make('college_id')
-                            ->label('College')
-                            ->visible(fn($record, $get) => Campus::query()->where([
-                                'id' => $get('campus_id'),
-                                'isSatelliteCampus' => 0
-                                ])->exists()
-                            )              
-                            ->options(fn (Get $get): Collection => College::query()
-                                ->where('campus_id', $get('campus_id'))
-                                ->pluck('college_name', 'id'))
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\TextInput::make('program_name')
+                                Select::make('campus_id')
+                                    ->label('Campus')
+                                    ->options(Campus::all()->pluck('campus_name', 'id'))
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn (callable $set) => $set('college_id', null)),
+                                Select::make('college_id')
+                                    ->label('College')
+                                    ->options(function (callable $get) {
+                                        $campusId = $get('campus_id');
+                                        if ($campusId) {
+                                            return College::where('campus_id', $campusId)->pluck('college_name', 'id');
+                                        }
+                                        return [];
+                                    })
+                                    ->required()
+                                    ->reactive(),
+                        TextInput::make('program_name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('program_abbreviation')
+                        TextInput::make('program_abbreviation')
                             ->required()
                             ->maxLength(20),
-                    ])->columns(2)
+                    ])->columns(2),
+                Section::make('Program Major Information')
+                    ->description("Please put the program major's details here.")
+                    ->schema([
+                        Repeater::make('program_majors')
+                            ->relationship('ProgramMajor')
+                            ->schema([
+                                TextInput::make('program_major_name')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('program_major_abbreviation')
+                                    ->required()
+                                    ->maxLength(20),
+                                ])
+                    ])
                 ]);
     }
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('Campus.campus_name')
+                TextColumn::make('Campus.campus_name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('College.college_name')
+                TextColumn::make('College.college_name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('program_name')
+                TextColumn::make('program_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('program_abbreviation')
+                TextColumn::make('program_abbreviation')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+               TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
+                TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true), 

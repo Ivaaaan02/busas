@@ -36,7 +36,7 @@ class Program extends Model
 
 
     public function ProgramMajor() {
-        return $this->hasMany('ProgramMajor', 'program_id');
+        return $this->hasMany(ProgramMajor::class);
     }
 
     public function Course() {
