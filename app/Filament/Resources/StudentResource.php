@@ -7,7 +7,9 @@ use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -64,10 +66,68 @@ class StudentResource extends Resource
                             ->format('d/m/Y')
                             ->native(false),
                     ])->columns(2),
-                Section::make('Student Information')
+                Section::make('Student Registration Information')
                         ->description("Please put the student's details here.")
                         ->schema([
-            
+                            Repeater::make('stundent_registration_infos')
+                            ->relationship('StudentRegistrationInfo')
+                            ->schema([
+                                TextInput::make('last_date_attended')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(1969)
+                                    ->minLength(4)
+                                    ->maxLength(4),
+                                Select::make('category')
+                                    ->required()
+                                    ->label('Category')
+                                    ->options([
+                                        'Senior High School Graduate' => 'Senior High School Graduate',
+                                        'High School Graduate' => 'High School Graduate',
+                                        'Shiftee' => 'Shiftee',
+                                        'Transferee' => 'Transferee',
+                                    ]),
+                                TextInput::make('last_school_attended')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('date_semester_admitted')
+                                    ->required()
+                                    ->maxLength(100),
+                                ])->columns(2),
+                                ]),
+
+                        Section::make('Student Graduation Information')
+                        ->description("Please put the student's details here.")
+                        ->schema([
+                            Repeater::make('stundent_graduation_infos')
+                            ->relationship('StudentGraduationInfo')
+                            ->schema([
+                                DatePicker::make('graduation_date')
+                                    ->format('d/m/Y')
+                                    ->native(false),
+                                TextInput::make('board_approval')
+                                    ->required()
+                                    ->maxLength(255),
+                                Select::make('latin_honor')
+                                    ->label('Latin Honor')
+                                    ->options([
+                                        'Suma Cum Laude' => 'Suma Cum Laude',
+                                        'Magna Cum Laude' => 'Magna Cum Laude',
+                                        'Cum Laude' => 'Cum Laude',
+                                        'Academic Distinction' => 'Academic Distinction',
+                                        'Outstanding Graduate' => 'Outstanding Graduate',
+                                        'Most Outstanding Graduate' => 'Most Outstanding Graduate',
+                                    ]),
+                                TextInput::make('nstp_no')
+                                    ->required()
+                                    ->maxLength(100),
+                                TextInput::make('gwa')
+                                    ->required()
+                                    ->numeric()
+                                    // ->decimalPlaces(4)
+                                    // ->decimalSeparator(','),
+                                    
+                                ])->columns(2),
                         ])
             ]);
     }
