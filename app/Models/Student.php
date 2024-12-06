@@ -27,4 +27,12 @@ class Student extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function StudentRegistrationInfo() {
+        return $this->hasMany(StudentRegistrationInfo::class);
+    }
+
+    public function StudentGraduationInfo() {
+        return $this->hasMany(StudentGraduationInfo::class);
+    }
 }

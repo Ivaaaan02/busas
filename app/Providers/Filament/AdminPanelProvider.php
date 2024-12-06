@@ -37,11 +37,11 @@ class AdminPanelProvider extends PanelProvider
             ])
         
             ->navigationGroups([
-                'User Management',
                 'System Management',
                 'Campus Management',
                 'Academic Management',
                 'Program Management',
+                'Student Management',
             ])
 
             ->font('Poppins')
