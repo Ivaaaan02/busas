@@ -63,7 +63,6 @@ class StudentResource extends Resource
                         TextInput::make('place_of_birth')
                             ->maxLength(255),
                         DatePicker::make('date_of_birth')
-                            ->format('d/m/Y')
                             ->native(false),
                     ])->columns(2),
                 Section::make('Student Registration Information')
@@ -103,7 +102,6 @@ class StudentResource extends Resource
                             ->relationship('StudentGraduationInfo')
                             ->schema([
                                 DatePicker::make('graduation_date')
-                                    ->format('d/m/Y')
                                     ->native(false),
                                 TextInput::make('board_approval')
                                     ->required()
@@ -124,9 +122,8 @@ class StudentResource extends Resource
                                 TextInput::make('gwa')
                                     ->required()
                                     ->numeric()
-                                    // ->decimalPlaces(4)
-                                    // ->decimalSeparator(','),
-                                    
+                                    ->rules('numeric|regex:/^\d{1,1}(\.\d{1,4})?$/'),
+                            
                                 ])->columns(2),
                         ])
             ]);
