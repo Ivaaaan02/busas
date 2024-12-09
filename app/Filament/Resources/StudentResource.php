@@ -66,33 +66,41 @@ class StudentResource extends Resource
                             ->label('Campus')
                             ->options(Campus::all()->pluck('campus_name', 'id'))
                             ->reactive()
-                            ->afterStateUpdated(function (Set $set) {
+                            ->afterStateUpdated(function (callable $set) {
                                 $set('college_id', null);
                                 $set('program_id', null);
+                                $set('program_major_id', null);
                             })
                             ->required(),
+
                         Select::make('college_id')
                             ->label('College')
-                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
-                            ->searchable()
-                            ->preload(),
+                            ->options(fn (callable $get) => 
+                                College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id')
+                            )
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('program_id', null);
+                                $set('program_major_id', null);
+                            })
+                            ->required(),
+    
                         Select::make('program_id')
                             ->label('Program')
-                            ->options(fn (Get $get): Collection => Program::query()
-                                ->where('college_id', $get('college_id'))
-                                ->orWhere('campus_id', $get('campus_id'))
-                                ->pluck('program_name', 'id'))
-                            ->required()
-                            ->searchable()
-                            ->preload(),
+                            ->options(fn (callable $get) => 
+                                Program::where('college_id', $get('college_id'))->pluck('program_name', 'id')
+                            )
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('program_major_id', null);
+                            })
+                            ->required(),
+    
                         Select::make('program_major_id')
                             ->label('Program Major')
-                            ->options(fn (Get $get): Collection => ProgramMajor::query()
-                                ->where('program_id', $get('program_id'))
-                                ->pluck('program_major_name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                            ->options(fn (callable $get) => 
+                                ProgramMajor::where('program_id', $get('program_id'))->pluck('program_major_name', 'id')
+                            ),
                         TextInput::make('address')
                             ->required()
                             ->maxLength(255),
@@ -185,6 +193,12 @@ class StudentResource extends Resource
                 TextColumn::make('suffix')
                     ->searchable(),
                 TextColumn::make('sex')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('program.program_name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('program_major.program_major_name')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('address')

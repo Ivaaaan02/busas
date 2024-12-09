@@ -106,6 +106,18 @@ class CampusResource extends Resource
                     ->label('Satellite Campus')
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('College.college_name')
+                    ->searchable()
+                    ->sortable()
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3),
+                TextColumn::make('College.college_address')
+                    ->searchable()
+                    ->sortable()
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

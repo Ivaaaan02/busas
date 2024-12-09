@@ -98,6 +98,14 @@ class ProgramResource extends Resource
                     ->searchable(),
                 TextColumn::make('program_abbreviation')
                     ->searchable(),
+                TextColumn::make('ProgramMajor.program_major_name')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->bulleted(),
+                TextColumn::make('ProgramMajor.program_major_abbreviation')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->bulleted(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
