@@ -20,6 +20,7 @@ class Student extends Model
         'first_name',
         'middle_name',
         'suffix',
+        'program_id',
         'sex',
         'address',
         'place_of_birth',
@@ -34,5 +35,9 @@ class Student extends Model
 
     public function StudentGraduationInfo() {
         return $this->hasMany(StudentGraduationInfo::class);
+    }
+
+    public function Program(){
+        return $this->belongsTo(Program::class, 'program_id');
     }
 }

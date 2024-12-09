@@ -4,6 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\Campus;
+use App\Models\College;
+use App\Models\Program;
+use App\Models\ProgramMajor;
 use App\Models\Student;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -13,6 +17,9 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -55,6 +62,37 @@ class StudentResource extends Resource
                             ->default('-'),
                         TextInput::make('suffix')
                             ->maxLength(10),
+                            Select::make('campus_id')
+                            ->label('Campus')
+                            ->options(Campus::all()->pluck('campus_name', 'id'))
+                            ->reactive()
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('college_id', null);
+                                $set('program_id', null);
+                            })
+                            ->required(),
+                        Select::make('college_id')
+                            ->label('College')
+                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
+                            ->searchable()
+                            ->preload(),
+                        Select::make('program_id')
+                            ->label('Program')
+                            ->options(fn (Get $get): Collection => Program::query()
+                                ->where('college_id', $get('college_id'))
+                                ->orWhere('campus_id', $get('campus_id'))
+                                ->pluck('program_name', 'id'))
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        Select::make('program_major_id')
+                            ->label('Program Major')
+                            ->options(fn (Get $get): Collection => ProgramMajor::query()
+                                ->where('program_id', $get('program_id'))
+                                ->pluck('program_major_name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
                         TextInput::make('address')
                             ->required()
                             ->maxLength(255),

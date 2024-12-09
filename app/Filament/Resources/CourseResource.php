@@ -105,10 +105,11 @@ class CourseResource extends Resource
 
                     Select::make('curriculum_id')
                         ->label('Curriculum')
-                        ->options(fn (Get $get): Collection => Curriculum::query()
-                            ->where('program_id', $get('program_id'))
-                            ->orWhere('program_major_id', $get('program_major_id'))
-                            ->pluck('curriculum_name', 'id'))
+                        // ->options(fn (Get $get): Collection => Curriculum::query()
+                        //     ->where('program_id', $get('program_id'))
+                        //     ->orWhere('program_major_id', $get('program_major_id'))
+                        //     ->pluck('curriculum_name', 'id'))
+                        ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name')
                         ->required()
                         ->searchable()
                         ->preload(),
@@ -122,7 +123,7 @@ class CourseResource extends Resource
                     TextInput::make('course_unit')
                         ->required()
                         ->maxLength(5),
-                    ])->columns(3)
+                    ])->columns(2)
             ]);
     }
 
@@ -130,15 +131,8 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('acadterm.acad_term')
-                    ->label('Academic Term')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('program.program_name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('programmajor.program_major_name')
-                    ->label('Program Major')
+                Tables\Columns\TextColumn::make('curriculum.curriculum_name')
+                    ->label('Curriculum')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('descriptive_title')
