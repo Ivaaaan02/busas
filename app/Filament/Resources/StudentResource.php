@@ -7,6 +7,7 @@ use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -23,7 +24,7 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
 
     protected static ?string $navigationLabel = 'Student';
 
@@ -54,9 +55,6 @@ class StudentResource extends Resource
                             ->default('-'),
                         TextInput::make('suffix')
                             ->maxLength(10),
-                        TextInput::make('sex')
-                            ->required()
-                            ->maxLength(1),
                         TextInput::make('address')
                             ->required()
                             ->maxLength(255),
@@ -64,7 +62,15 @@ class StudentResource extends Resource
                             ->maxLength(255),
                         DatePicker::make('date_of_birth')
                             ->native(false),
-                    ])->columns(2),
+                        Radio::make('sex')
+                            ->required()
+                            ->options([
+                                'M' => 'Male',
+                                'F' => 'Female'
+                            ])
+                            ->inline()
+                            ->inlineLabel(false),
+                    ])->columns(3),
                 Section::make('Student Registration Information')
                         ->description("Please put the student's details here.")
                         ->schema([
@@ -83,7 +89,6 @@ class StudentResource extends Resource
                                     ->options([
                                         'Senior High School Graduate' => 'Senior High School Graduate',
                                         'High School Graduate' => 'High School Graduate',
-                                        'Shiftee' => 'Shiftee',
                                         'Transferee' => 'Transferee',
                                     ]),
                                 TextInput::make('last_school_attended')
@@ -98,7 +103,7 @@ class StudentResource extends Resource
                         Section::make('Student Graduation Information')
                         ->description("Please put the student's details here.")
                         ->schema([
-                            Repeater::make('stundent_graduation_infos')
+                            Repeater::make('student_graduation_infos')
                             ->relationship('StudentGraduationInfo')
                             ->schema([
                                 DatePicker::make('graduation_date')
@@ -142,6 +147,7 @@ class StudentResource extends Resource
                 TextColumn::make('suffix')
                     ->searchable(),
                 TextColumn::make('sex')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('address')
                     ->searchable(),

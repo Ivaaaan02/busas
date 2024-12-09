@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('last_name')->default('-');
             $table->string('first_name')->default('-');
             $table->string('middle_name')->default('-');
+            $table->foreignId('program_id')->constrained('programs');
             $table->string('suffix', 10)->nullable();
             $table->string('sex', 1);
             $table->string('address');

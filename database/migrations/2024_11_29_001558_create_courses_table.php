@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('acad_term_id')->constrained('acad_terms');
-            $table->foreignId('program_id')->constrained('programs');
-            $table->foreignId('program_major_id')->constrained('program_majors');
+            // $table->foreignId('acad_term_id')->constrained('acad_terms');
+            // $table->foreignId('program_id')->constrained('programs');
+            // $table->foreignId('program_major_id')->constrained('program_majors');
             $table->foreignId('curriculum_id')->constrained('curricula');
             $table->string('descriptive_title');
             $table->string('course_code', 20);

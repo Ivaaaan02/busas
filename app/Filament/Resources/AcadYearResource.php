@@ -20,7 +20,7 @@ class AcadYearResource extends Resource
 {
     protected static ?string $model = AcadYear::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $navigationLabel = 'Academic Year';
 

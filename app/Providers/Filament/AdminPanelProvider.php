@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'danger' => Color::Red,
                 'gray' => Color::Slate,
@@ -35,13 +37,21 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
             ])
-        
+                
             ->navigationGroups([
                 'System Management',
                 'Campus Management',
                 'Academic Management',
                 'Program Management',
                 'Student Management',
+                NavigationGroup::make('Campus')
+                    ->icon('heroicon-o-building-library'),
+                NavigationGroup::make('Academic')
+                    ->icon('heroicon-o-folder-open'),
+                NavigationGroup::make('Program')
+                    ->icon('heroicon-o-book-open'),
+                NavigationGroup::make('Student')
+                    ->icon('heroicon-o-academic-cap'),
             ])
 
             ->font('Poppins')
