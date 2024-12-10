@@ -22,7 +22,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Colors\Color;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
@@ -94,7 +97,7 @@ class CurriculumResource extends Resource
                                 ->orWhere('campus_id', $get('campus_id'))
                                 ->pluck('program_name', 'id'))
                             ->required()
-                            ->searchable()
+                            ->searchable() 
                             ->preload()
                             ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
                         Select::make('program_major_id')
@@ -141,20 +144,51 @@ class CurriculumResource extends Resource
             ->columns([
                 TextColumn::make('acadterm.acad_term')
                     ->label('Academic Term')
-                    ->sortable(),
+                    ->sortable()
+                    ->weight(FontWeight::Bold)
+                    ->color(Color::Gray),
                 TextColumn::make('program.program_name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap()
+                    ->lineClamp(2)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                 
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+                        return $state;
+                    }),
                 TextColumn::make('programmajor.program_major_name')
                     ->label('Program Major')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->limit(40)
+                    ->default('N/A')
+                    ->badge()
+                    ->color(Color::Orange),
                 TextColumn::make('curriculum_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Curriculum Name')
+                    ->limit(40)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                 
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+                        return $state;
+                    }),
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->since()
+                    ->dateTimeTooltip()
+                    ->icon('heroicon-m-clock')
+                    ->iconColor('primary')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -163,26 +197,41 @@ class CurriculumResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->label('Created By')
+                    ->badge()
+                    ->color('primary')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 

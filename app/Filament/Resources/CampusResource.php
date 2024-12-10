@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -109,7 +110,9 @@ class CampusResource extends Resource
                 TextColumn::make('campus_name')
                     ->label('Campus Name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight(FontWeight::Bold)
+                    ->color(Color::Gray),
                 TextColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
                     ->badge()

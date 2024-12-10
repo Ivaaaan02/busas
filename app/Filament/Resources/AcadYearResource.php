@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Filters\RangeFilter;
+use Filament\Support\Enums\FontWeight;
 
 class AcadYearResource extends Resource
 {
@@ -62,7 +63,9 @@ class AcadYearResource extends Resource
             ->columns([
                 TextColumn::make('year')
                     ->label('Academic Year')
-                    ->searchable(),
+                    ->searchable()
+                    ->weight(FontWeight::Bold)
+                    ->color(Color::Gray),
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable()

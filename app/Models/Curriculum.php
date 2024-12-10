@@ -24,6 +24,11 @@ class Curriculum extends Model
         'updated_by',
     ];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
     public function AcadTerm()
     {
         return $this->belongsTo(AcadTerm::class);

@@ -53,4 +53,8 @@ class User extends Authenticatable
     public function acadYear() {
         return $this->hasMany(AcadYear::class);
     }
+
+    public function curriculum() {
+        return $this->hasMany(Curriculum::class);
+    }
 }
