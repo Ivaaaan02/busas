@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CampusResource\Pages;
 use App\Filament\Resources\CampusResource\RelationManagers;
 use App\Models\Campus;
+use App\Models\User;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -12,12 +13,14 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
 
 class CampusResource extends Resource
 {
@@ -41,6 +44,7 @@ class CampusResource extends Resource
                 ->description("Please put the campus's details here.")
                 ->schema([
                     TextInput::make('campus_name')
+                        ->label('Campus Name')
                         ->required()
                         ->reactive()
                         ->afterStateUpdated(function (callable $set, callable $get){
@@ -51,6 +55,7 @@ class CampusResource extends Resource
                             }
                         }),
                     Toggle::make('isSatelliteCampus')
+                        ->label('Satellite Campus')
                         ->required()
                         ->reactive()
                         ->live()
@@ -77,9 +82,11 @@ class CampusResource extends Resource
                         ->relationship('College')
                         ->schema([
                             TextInput::make('college_name')
+                                ->label('College Name')
                                 ->required()
                                 ->maxLength(255),
                             Select::make('college_address')
+                                ->label('College Address')
                                 ->required()
                                 ->options([
                                     'Legazpi City' => 'Legazpi City',
@@ -100,19 +107,34 @@ class CampusResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('campus_name')
+                    ->label('Campus Name')
                     ->searchable()
                     ->sortable(),
-                IconColumn::make('isSatelliteCampus')
+                TextColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
-                    ->boolean()
+                    ->badge()
+                    ->formatStateUsing(function ($state, $record){
+                        if($record->campus_name === 'Main Campus'){
+                            return 'Main Campus';
+                        }
+                        return $state ? 'External Campus' : 'Satellite Campus';
+                    })
+                    ->color(function ($record, $state) {
+                        if ($record->campus_name === 'Main Campus')
+                            return Color::Green;
+                        else
+                            return $state ? Color::Red : Color::Amber;
+                    })
                     ->sortable(),
                 TextColumn::make('College.college_name')
+                    ->label('College Name')
                     ->searchable()
                     ->sortable()
                     ->listWithLineBreaks()
                     ->bulleted()
                     ->limitList(3),
                 TextColumn::make('College.college_address')
+                    ->label('College Address')
                     ->searchable()
                     ->sortable()
                     ->listWithLineBreaks()
@@ -121,7 +143,7 @@ class CampusResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -130,26 +152,47 @@ class CampusResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->label('Created by')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
+                SelectFilter::make('isSatelliteCampus')
+                    ->label('Satellite Campus')
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ]),
+                SelectFilter::make('College')
+                    ->relationship('College', 'college_name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 

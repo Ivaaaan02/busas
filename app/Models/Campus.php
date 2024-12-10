@@ -36,12 +36,16 @@ class Campus extends Model
         });
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function College() {
         return $this->hasMany(College::class);
     }
 
     public function Program() {
         return $this->hasMany('Program', 'program_id');
-    }
-    
+    } 
 }
