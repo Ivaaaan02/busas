@@ -17,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Filters\RangeFilter;
 
 class AcadYearResource extends Resource
 {
@@ -110,6 +111,7 @@ class AcadYearResource extends Resource
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
+
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
