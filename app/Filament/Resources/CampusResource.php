@@ -117,11 +117,22 @@ class CampusResource extends Resource
                         if($record->campus_name === 'Main Campus'){
                             return 'Main Campus';
                         }
-                        return $state ? 'External Campus' : 'Satellite Campus';
+                        elseif ($record->campus_name === 'Daraga Campus'){
+                            return 'Daraga Campus';
+                        }
+                        elseif ($record->campus_name === 'East Campus'){
+                            return 'East Campus';
+                        }
+                            
+                        return $state ? 'Satellite Campus' : 'Satellite Campus';
                     })
                     ->color(function ($record, $state) {
                         if ($record->campus_name === 'Main Campus')
                             return Color::Green;
+                        elseif ($record->campus_name === 'Daraga Campus')
+                            return Color::Amber;
+                        elseif ($record->campus_name === 'East Campus')
+                            return Color::Blue;
                         else
                             return $state ? Color::Red : Color::Amber;
                     })
@@ -132,16 +143,23 @@ class CampusResource extends Resource
                     ->sortable()
                     ->listWithLineBreaks()
                     ->bulleted()
-                    ->limitList(3),
+                    ->limitList(3)
+                    ->expandableLimitedList(),
                 TextColumn::make('College.college_address')
                     ->label('College Address')
                     ->searchable()
                     ->sortable()
                     ->listWithLineBreaks()
                     ->bulleted()
-                    ->limitList(3),
+                    ->limitList(3)
+                    ->expandableLimitedList(),
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
+                    ->since()
+                    ->dateTimeTooltip()
+                    ->icon('heroicon-m-clock')
+                    ->iconColor('primary')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
@@ -153,7 +171,9 @@ class CampusResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.name')
-                    ->label('Created by')
+                    ->label('Created By')
+                    ->badge()
+                    ->color(Color::Amber)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')

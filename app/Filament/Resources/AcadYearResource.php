@@ -9,7 +9,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Support\Colors\Color;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -62,14 +64,31 @@ class AcadYearResource extends Resource
                     ->searchable(),
                 TextColumn::make('start_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->icon('heroicon-m-calendar')
+                    ->iconColor(Color::Green),
                 TextColumn::make('end_date')
                     ->date()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->icon('heroicon-m-calendar')
+                    ->iconColor(Color::Red),
+                TextColumn::make('AcadTerm.acad_term')
+                    ->label('Academic Term')
+                    ->searchable()
+                    ->sortable()
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->since()
+                    ->dateTimeTooltip()
+                    ->icon('heroicon-m-clock')
+                    ->iconColor('primary')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -78,10 +97,11 @@ class AcadYearResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')
+                    ->label('Created By')
+                    ->badge()
+                    ->color('primary')
+                    ->toggleable(isToggledHiddenByDefault: false),
                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()

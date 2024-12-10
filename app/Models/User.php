@@ -46,7 +46,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function Campus() {
+    public function campus() {
         return $this->hasMany(Campus::class);
+    }
+
+    public function acadYear() {
+        return $this->hasMany(AcadYear::class);
     }
 }
