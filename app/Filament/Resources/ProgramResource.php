@@ -17,6 +17,8 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -91,25 +93,54 @@ class ProgramResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('Campus.campus_name')
+                    ->weight(FontWeight::Bold)
+                    ->label('Campus Name')
                     ->sortable(),
                 TextColumn::make('College.college_name')
+                    ->label('College Name')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('program_name')
-                    ->searchable(),
+                    ->label('Program Name')
+                    ->numeric()
+                    ->sortable()
+                    ->wrap()
+                    ->lineClamp(2)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                 
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+                        return $state;
+                    }),
                 TextColumn::make('program_abbreviation')
-                    ->searchable(),
+                    ->label('Program Abbreviation')
+                    ->sortable()
+                    ->limit(40)
+                    ->default('N/A')
+                    ->badge()
+                    ->color(Color::Orange),
                 TextColumn::make('ProgramMajor.program_major_name')
+                ->label('Program Major Name')
                     ->searchable()
                     ->listWithLineBreaks()
-                    ->bulleted(),
+                    ->bulleted()
+                    ->default('N/A'),
                 TextColumn::make('ProgramMajor.program_major_abbreviation')
+                    ->label('Program Major Abbreviation')    
                     ->searchable()
                     ->listWithLineBreaks()
                     ->bulleted(),
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->since()
+                    ->dateTimeTooltip()
+                    ->icon('heroicon-m-clock')
+                    ->iconColor('primary')
+                    ->toggleable(isToggledHiddenByDefault: false),
                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -118,26 +149,41 @@ class ProgramResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_by')
-                    ->numeric()
+                    TextColumn::make('user.name')
+                    ->label('Created By')
+                    ->badge()
+                    ->color('primary')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true), 
             ])->defaultSort('Campus.campus_name')
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 

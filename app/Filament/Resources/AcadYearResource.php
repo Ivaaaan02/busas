@@ -64,8 +64,7 @@ class AcadYearResource extends Resource
                 TextColumn::make('year')
                     ->label('Academic Year')
                     ->searchable()
-                    ->weight(FontWeight::Bold)
-                    ->color(Color::Gray),
+                    ->weight(FontWeight::Bold),
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable()

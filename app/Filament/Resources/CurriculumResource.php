@@ -145,8 +145,8 @@ class CurriculumResource extends Resource
                 TextColumn::make('acadterm.acad_term')
                     ->label('Academic Term')
                     ->sortable()
-                    ->weight(FontWeight::Bold)
-                    ->color(Color::Gray),
+                    ->weight(FontWeight::Bold),
+                    
                 TextColumn::make('program.program_name')
                     ->numeric()
                     ->sortable()
@@ -162,7 +162,6 @@ class CurriculumResource extends Resource
                     }),
                 TextColumn::make('programmajor.program_major_name')
                     ->label('Program Major')
-                    ->numeric()
                     ->sortable()
                     ->limit(40)
                     ->default('N/A')

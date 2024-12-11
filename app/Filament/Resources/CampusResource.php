@@ -111,8 +111,7 @@ class CampusResource extends Resource
                     ->label('Campus Name')
                     ->searchable()
                     ->sortable()
-                    ->weight(FontWeight::Bold)
-                    ->color(Color::Gray),
+                    ->weight(FontWeight::Bold),
                 TextColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
                     ->badge()
