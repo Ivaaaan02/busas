@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\CurriculumResource\Pages;
 
 use App\Filament\Resources\CurriculumResource;
-use App\Models\College;
+use App\Models\ProgramMajor;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -24,10 +24,10 @@ class EditCurriculum extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $data['campus_id'] = College::where('id', $data['college_id'])->first()->campus_id;
+    // protected function mutateFormDataBeforeFill(array $data): array
+    // {
+    //     $data['program_id'] = ProgramMajor::where('id', $data['program_major_id'])->first()->program_id;
 
-        return $data;
-    }
+    //     return $data;
+    // }
 }
