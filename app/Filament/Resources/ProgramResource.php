@@ -15,7 +15,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
@@ -25,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 
 class ProgramResource extends Resource
@@ -48,23 +48,23 @@ class ProgramResource extends Resource
                 Section::make('Program Information')
                     ->description("Please put the program's details here.")
                     ->schema([
-                                Select::make('campus_id')
-                                    ->label('Campus')
-                                    ->options(Campus::all()->pluck('campus_name', 'id'))
-                                    ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(fn (callable $set) => $set('college_id', null)),
-                                Select::make('college_id')
-                                    ->label('College')
-                                    ->options(function (callable $get) {
-                                        $campusId = $get('campus_id');
-                                        if ($campusId) {
-                                            return College::where('campus_id', $campusId)->pluck('college_name', 'id');
-                                        }
-                                        return [];
-                                    })
-                                    ->required()
-                                    ->reactive(),
+                        Select::make('campus_id')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->label('Campus Name')
+                            ->options(Campus::pluck('campus_name', 'id'))
+                                ->afterStateUpdated(function (Set $set, Get $get) {
+                                    $set('college_id', null);
+                                    $set('program_id', null);
+                                    $set('program_major_id', null);
+                                }),
+                        Select::make('college_id')
+                            ->label('College')
+                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
+                            ->searchable()
+                            ->preload(),
                         TextInput::make('program_name')
                             ->required()
                             ->maxLength(255),
@@ -131,7 +131,8 @@ class ProgramResource extends Resource
                     ->label('Program Major Abbreviation')    
                     ->searchable()
                     ->listWithLineBreaks()
-                    ->bulleted(),
+                    ->bulleted()
+                    ->default('N/A'),
                 TextColumn::make('created_at')
                     ->label('Created At') 
                     ->dateTime()

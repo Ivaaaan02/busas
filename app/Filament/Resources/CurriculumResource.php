@@ -68,11 +68,24 @@ class CurriculumResource extends Resource
                             ->searchable()
                             ->preload()
                             ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                        // Select::make('campus_id')
+                        //     ->label('Campus')
+                        //     ->options(Campus::all()->pluck('campus_name', 'id'))
+                        //     ->reactive()
+                        //     ->required()
+                        //     ->afterStateUpdated(function (Set $set, Get $get) {
+                        //         $set('college_id', null);
+                        //         $set('program_id', null);
+                        //         $set('program_major_id', null);
+                        //         self::updateCurriculumName($set, $get);
+                        //     }),
                         Select::make('campus_id')
-                            ->label('Campus')
-                            ->options(Campus::all()->pluck('campus_name', 'id'))
-                            ->reactive()
-                            ->required()
+                        ->required()
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->label('Campus Name')
+                        ->options(Campus::pluck('campus_name', 'id'))
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 $set('college_id', null);
                                 $set('program_id', null);
@@ -81,10 +94,10 @@ class CurriculumResource extends Resource
                             }),
                         Select::make('college_id')
                             ->label('College')
-                            ->visible(fn (Get $get) => Campus::query()->where([
-                                'id' => $get('campus_id'),
-                                'isSatelliteCampus' => 0
-                            ])->exists())
+                            // ->visible(fn (Get $get) => Campus::query()->where([
+                            // //     'id' => $get('campus_id'),
+                            // //     'isSatelliteCampus' => 0
+                            // // ])->exists())
                             ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
                             ->searchable()
                             ->preload()
