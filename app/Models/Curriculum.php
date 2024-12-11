@@ -29,22 +29,22 @@ class Curriculum extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-    public function AcadTerm()
+    public function acadTerm()
     {
         return $this->belongsTo(AcadTerm::class);
     }
     
-    public function Program()
+    public function program()
     {
         return $this->belongsTo(Program::class);
     }
 
-    public function ProgramMajor()
+    public function programMajor()
     {
         return $this->belongsTo(ProgramMajor::class);
     }
 
-    public function Course() {
-        return $this->hasMany('Course', 'curriculum_id');
+    public function course() {
+        return $this->hasMany('Course');
     }
 }

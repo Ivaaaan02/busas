@@ -29,7 +29,7 @@ class Program extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function Campus()
+    public function campus()
     {
         return $this->belongsTo(Campus::class);
     }
@@ -40,15 +40,15 @@ class Program extends Model
     }
 
 
-    public function ProgramMajor() {
+    public function programMajor() {
         return $this->hasMany(ProgramMajor::class);
     }
 
-    public function Course() {
-        return $this->hasMany('Course', 'program_id');
+    public function course() {
+        return $this->hasMany('Course');
     }
 
-    public function Student() {
+    public function student() {
         return $this->hasMany(Student::class);
     }
 }
