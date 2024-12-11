@@ -158,8 +158,7 @@ class CurriculumResource extends Resource
                 TextColumn::make('acadterm.acad_term')
                     ->label('Academic Term')
                     ->sortable()
-                    ->weight(FontWeight::Bold),
-                    
+                    ->weight(FontWeight::Medium),
                 TextColumn::make('program.program_name')
                     ->numeric()
                     ->sortable()
@@ -199,7 +198,7 @@ class CurriculumResource extends Resource
                     ->since()
                     ->dateTimeTooltip()
                     ->icon('heroicon-m-clock')
-                    ->iconColor('primary')
+                    ->iconColor(Color::Emerald)
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->dateTime()
@@ -212,7 +211,8 @@ class CurriculumResource extends Resource
                 TextColumn::make('user.name')
                     ->label('Created By')
                     ->badge()
-                    ->color('primary')
+                    ->icon('heroicon-m-user')
+                    ->color(Color::Orange)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')

@@ -152,8 +152,9 @@ class ProgramResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('user.name')
                     ->label('Created By')
+                    ->icon('heroicon-m-user')
                     ->badge()
-                    ->color('primary')
+                    ->color(Color::Orange) 
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')

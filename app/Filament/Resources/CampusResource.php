@@ -111,7 +111,7 @@ class CampusResource extends Resource
                     ->label('Campus Name')
                     ->searchable()
                     ->sortable()
-                    ->weight(FontWeight::Bold),
+                    ->weight(FontWeight::Medium),
                 TextColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
                     ->badge()
@@ -130,13 +130,13 @@ class CampusResource extends Resource
                     })
                     ->color(function ($record, $state) {
                         if ($record->campus_name === 'Main Campus')
-                            return Color::Green;
+                            return Color::Emerald;
                         elseif ($record->campus_name === 'Daraga Campus')
                             return Color::Amber;
                         elseif ($record->campus_name === 'East Campus')
-                            return Color::Blue;
+                            return Color::Cyan;
                         else
-                            return $state ? Color::Red : Color::Amber;
+                            return Color::Rose;
                     })
                     ->sortable(),
                 TextColumn::make('College.college_name')
@@ -161,7 +161,7 @@ class CampusResource extends Resource
                     ->since()
                     ->dateTimeTooltip()
                     ->icon('heroicon-m-clock')
-                    ->iconColor('primary')
+                    ->iconColor(Color::Emerald)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
@@ -174,8 +174,9 @@ class CampusResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.name')
                     ->label('Created By')
+                    ->icon('heroicon-m-user')
                     ->badge()
-                    ->color(Color::Amber)
+                    ->color(Color::Orange)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_by')

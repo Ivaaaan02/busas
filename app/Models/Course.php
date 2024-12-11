@@ -19,14 +19,16 @@ class Course extends Model
         'descriptive_title',
         'course_code',
         'course_unit',
-        'acad_term_id',
-        'program_id',
-        'program_major_id',
         'curriculum_id',
         'created_by',
         'updated_by',
     ];
     
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function AcadTerm()
     {
         return $this->belongsTo(AcadTerm::class);

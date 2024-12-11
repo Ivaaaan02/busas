@@ -13,6 +13,7 @@ use App\Models\Curriculum;
 use App\Models\AcadYear;
 use App\Models\AcadTerm;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -22,6 +23,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Colors\Color;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
@@ -47,68 +51,8 @@ class CourseResource extends Resource
                 Section::make('Course Information')
                 ->description("Please put the course's details here.")
                 ->schema([
-
-
-                    // Select::make('acad_year_id')
-                    // ->label('Academic Year')
-                    // ->options(AcadYear::all()->pluck('year', 'id'))
-                    // ->reactive()
-                    // ->afterStateUpdated(function (Set $set) {
-                    //     $set('acad_term_id', null);
-                    // })
-                    // ->required(),
-
-                    // Select::make('acad_term_id')
-                    // ->label('Academic Term')
-                    // ->options(fn (Get $get): Collection => AcadTerm::query()
-                    //     ->where('acad_year_id', $get('acad_year_id'))
-                    //     ->pluck('acad_term', 'id'))
-                    // ->required()
-                    // ->searchable()
-                    // ->preload(),
-
-                    // Select::make('campus_id')
-                    // ->label('Campus')
-                    // ->options(Campus::all()->pluck('campus_name', 'id'))
-                    // ->reactive()
-                    // ->afterStateUpdated(function (Set $set) {
-                    //     $set('college_id', null);
-                    // })
-                    // ->required(),
-
-                    // Select::make('college_id')
-                    // ->label('College')
-                    // ->options(fn (Get $get): Collection => College::query()
-                    //     ->where('campus_id', $get('campus_id'))
-                    //     ->pluck('college_name', 'id'))
-                    // ->required()
-                    // ->searchable()
-                    // ->preload(),
-
-                    // Select::make('program_id')
-                    // ->label('Program')
-                    // ->options(fn (Get $get): Collection => Program::query()
-                    //     ->where('campus_id', $get('campus_id'))
-                    //     ->orWhere('college_id', $get('college_id'))
-                    //     ->pluck('program_name', 'id'))
-                    // ->required()
-                    // ->searchable()
-                    // ->preload(),
-
-                    // Select::make('program_major_id')
-                    // ->label('ProgramMajor')
-                    // ->options(fn (Get $get): Collection => ProgramMajor::query()
-                    //     ->Where('program_id', $get('program_id'))
-                    //     ->pluck('program_major_name', 'id'))
-                    // ->searchable()
-                    // ->preload(),
-
                     Select::make('curriculum_id')
                         ->label('Curriculum')
-                        // ->options(fn (Get $get): Collection => Curriculum::query()
-                        //     ->where('program_id', $get('program_id'))
-                        //     ->orWhere('program_major_id', $get('program_major_id'))
-                        //     ->pluck('curriculum_name', 'id'))
                         ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name')
                         ->required()
                         ->searchable()
@@ -123,7 +67,25 @@ class CourseResource extends Resource
                     TextInput::make('course_unit')
                         ->required()
                         ->maxLength(5),
-                    ])->columns(2)
+                    ])->columns(2),
+                    Section::make('Course Information')
+                ->description("Please put the course's details here.")
+                ->schema([
+                    Repeater::make('courses')
+                        ->schema([
+                            TextInput::make('descriptive_title')
+                            ->required()
+                            ->maxLength(255),
+                       TextInput::make('course_code')
+                            ->required()
+                            ->maxLength(20),
+                        TextInput::make('course_unit')
+                            ->required()
+                            ->maxLength(5),
+                            ])
+                        ->columnSpanFull()
+                        ->columns(2),
+                ])
             ]);
     }
 
@@ -131,48 +93,82 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('curriculum.curriculum_name')
+                TextColumn::make('curriculum.curriculum_name')
                     ->label('Curriculum')
-                    ->numeric()
+                    ->weight(FontWeight::Medium)
+                    ->limit(40)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                 
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+                        return $state;
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('descriptive_title')
+                TextColumn::make('descriptive_title')
+                    ->label('Descriptive Title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('course_code')
+                TextColumn::make('course_code')
+                    ->searchable()
+                    ->badge()
+                    ->icon('heroicon-m-book-open')
+                    ->color(Color::Cyan),
+                TextColumn::make('course_unit')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('course_unit')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
+                    ->label('Created At') 
+                    ->dateTime()
+                    ->sortable()
+                    ->since()
+                    ->dateTimeTooltip()
+                    ->icon('heroicon-m-clock')
+                    ->iconColor(Color::Emerald)
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
+                TextColumn::make('user.name')
+                    ->label('Created By')
+                    ->icon('heroicon-m-user')
+                    ->badge()
+                    ->color(Color::Orange) 
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('updated_by')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 

@@ -64,17 +64,17 @@ class AcadYearResource extends Resource
                 TextColumn::make('year')
                     ->label('Academic Year')
                     ->searchable()
-                    ->weight(FontWeight::Bold),
+                    ->weight(FontWeight::Medium),
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable()
                     ->icon('heroicon-m-calendar')
-                    ->iconColor(Color::Green),
+                    ->iconColor(Color::Emerald),
                 TextColumn::make('end_date')
                     ->date()
                     ->sortable()
                     ->icon('heroicon-m-calendar')
-                    ->iconColor(Color::Red),
+                    ->iconColor(Color::Rose),
                 TextColumn::make('AcadTerm.acad_term')
                     ->label('Academic Term')
                     ->searchable()
@@ -89,7 +89,7 @@ class AcadYearResource extends Resource
                     ->since()
                     ->dateTimeTooltip()
                     ->icon('heroicon-m-clock')
-                    ->iconColor('primary')
+                    ->iconColor(Color::Emerald)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
@@ -102,8 +102,9 @@ class AcadYearResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.name')
                     ->label('Created By')
+                    ->icon('heroicon-m-user')
                     ->badge()
-                    ->color('primary')
+                    ->color(Color::Orange)
                     ->toggleable(isToggledHiddenByDefault: false),
                TextColumn::make('updated_by')
                     ->numeric()
