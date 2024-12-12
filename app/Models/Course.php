@@ -45,6 +45,6 @@ class Course extends Model
 
     public function Curriculum()
     {
-        return $this->belongsTo(Curriculum::class);
+        return $this->belongsTo(Curriculum::class, 'curriculum_id');
     }
 }

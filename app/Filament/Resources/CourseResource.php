@@ -48,43 +48,31 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Course Information')
-                ->description("Please put the course's details here.")
+                Section::make('Curriculum Information')
+                ->description("Please select the curriculum.")
                 ->schema([
                     Select::make('curriculum_id')
-                        ->label('Curriculum')
-                        ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name')
-                        ->required()
-                        ->searchable()
-                        ->preload(),
-
-                    TextInput::make('descriptive_title')
-                        ->required()
-                        ->maxLength(255),
-                   TextInput::make('course_code')
-                        ->required()
-                        ->maxLength(20),
-                    TextInput::make('course_unit')
-                        ->required()
-                        ->maxLength(5),
-                    ])->columns(2),
-                    Section::make('Course Information')
+                    ->label('Curriculum')
+                    ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+                ]),
+                Section::make('Course Information')
                 ->description("Please put the course's details here.")
                 ->schema([
                     Repeater::make('courses')
                         ->schema([
                             TextInput::make('descriptive_title')
-                            ->required()
-                            ->maxLength(255),
-                       TextInput::make('course_code')
-                            ->required()
-                            ->maxLength(20),
-                        TextInput::make('course_unit')
-                            ->required()
-                            ->maxLength(5),
-                            ])
-                        ->columnSpanFull()
-                        ->columns(2),
+                                ->required()
+                                ->maxLength(255),
+                            TextInput::make('course_code')
+                                ->required()
+                                ->maxLength(20),
+                            TextInput::make('course_unit')
+                                ->required()
+                                ->maxLength(5),
+                        ])->columns(2)->columnSpanFull()
                 ])
             ]);
     }
