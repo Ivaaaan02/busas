@@ -53,7 +53,7 @@ class CourseResource extends Resource
                 ->schema([
                     Select::make('curriculum_id')
                     ->label('Curriculum')
-                    ->relationship(name: 'Curriculum', titleAttribute: 'curriculum_name')
+                    ->relationship('curriculum',  'curriculum_name')
                     ->required()
                     ->searchable()
                     ->preload(),
@@ -61,7 +61,7 @@ class CourseResource extends Resource
                 Section::make('Course Information')
                 ->description("Please put the course's details here.")
                 ->schema([
-                    Repeater::make('courses')
+                    Repeater::make('course')
                         ->schema([
                             TextInput::make('descriptive_title')
                                 ->required()
