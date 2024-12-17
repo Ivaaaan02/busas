@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('campuses', function (Blueprint $table) {
             $table->id();
-            $table->string('campus_name');
+            $table->string('campus_name')->unique();
             $table->boolean('isSatelliteCampus');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

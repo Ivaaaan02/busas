@@ -54,7 +54,8 @@ class CampusResource extends Resource
                                     return array_merge($college, ['college_name' =>$get('campus_name')]);
                                 })->toArray());
                             }
-                        }),
+                        })
+                        ->unique(),
                     Toggle::make('isSatelliteCampus')
                         ->label('Satellite Campus')
                         ->required()
@@ -85,7 +86,8 @@ class CampusResource extends Resource
                             TextInput::make('college_name')
                                 ->label('College Name')
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->unique(),
                             Select::make('college_address')
                                 ->label('College Address')
                                 ->required()

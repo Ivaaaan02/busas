@@ -20,6 +20,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -91,15 +92,26 @@ class ProgramResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('College.college_name')
+            // ->groups([
+            //     'Campus.campus_name',
+            //     'College.college_name',
+            // ])
             ->columns([
                 TextColumn::make('Campus.campus_name')
-                    ->weight(FontWeight::Bold)
                     ->label('Campus Name')
-                    ->sortable(),
-                TextColumn::make('College.college_name')
-                    ->label('College Name')
-                    ->searchable()
-                    ->sortable(),
+                    ->badge()
+                    ->sortable()
+                    ->color(function ($record, $state) {
+                        if ($record->Campus->campus_name === 'Main Campus')
+                            return Color::Emerald;
+                        elseif ($record->Campus->campus_name === 'Daraga Campus')
+                            return Color::Amber;
+                        elseif ($record->CAMPUS->campus_name === 'East Campus')
+                            return Color::Cyan;
+                        else
+                            return Color::Rose;
+                    }),
                 TextColumn::make('program_name')
                     ->label('Program Name')
                     ->numeric()
@@ -161,7 +173,7 @@ class ProgramResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true), 
-            ])->defaultSort('Campus.campus_name')
+            ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

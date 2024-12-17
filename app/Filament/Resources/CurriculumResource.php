@@ -13,6 +13,7 @@ use App\Models\ProgramMajor;
 use App\Models\Program;
 use Filament\Forms;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -68,17 +69,6 @@ class CurriculumResource extends Resource
                             ->searchable()
                             ->preload()
                             ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-                        // Select::make('campus_id')
-                        //     ->label('Campus')
-                        //     ->options(Campus::all()->pluck('campus_name', 'id'))
-                        //     ->reactive()
-                        //     ->required()
-                        //     ->afterStateUpdated(function (Set $set, Get $get) {
-                        //         $set('college_id', null);
-                        //         $set('program_id', null);
-                        //         $set('program_major_id', null);
-                        //         self::updateCurriculumName($set, $get);
-                        //     }),
                         Select::make('campus_id')
                         ->required()
                         ->searchable()
@@ -94,10 +84,6 @@ class CurriculumResource extends Resource
                             }),
                         Select::make('college_id')
                             ->label('College')
-                            // ->visible(fn (Get $get) => Campus::query()->where([
-                            // //     'id' => $get('campus_id'),
-                            // //     'isSatelliteCampus' => 0
-                            // // ])->exists())
                             ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
                             ->searchable()
                             ->preload()
@@ -124,9 +110,27 @@ class CurriculumResource extends Resource
                         TextInput::make('curriculum_name')
                             ->required()
                             ->maxLength(255)
-                            ->disabled(),
+                            ->disabled()
+                            ->unique(),
                         Hidden::make('curriculum_name')
-                    ])->columns(2)
+                    ])->columns(2),
+                Section::make("Course's Information")
+                    ->description("Please put the curriculum's details here.")
+                    ->schema([
+                        Repeater::make('courses')
+                            ->relationship('Course')
+                            ->schema([
+                                TextInput::make('descriptive_title')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('course_code')
+                                    ->required()
+                                    ->maxLength(20),
+                                TextInput::make('course_unit')
+                                    ->required()
+                                    ->maxLength(5),
+                                ])->columns(3)
+                    ])
             ]);
     }
 
@@ -154,6 +158,7 @@ class CurriculumResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('curriculum_name')
             ->columns([
                 TextColumn::make('acadterm.acad_term')
                     ->label('Academic Term')
@@ -179,18 +184,40 @@ class CurriculumResource extends Resource
                     ->default('N/A')
                     ->badge()
                     ->color(Color::Orange),
-                TextColumn::make('curriculum_name')
-                    ->searchable()
-                    ->label('Curriculum Name')
-                    ->limit(40)
-                    ->tooltip(function (TextColumn $column): ?string {
-                        $state = $column->getState();
+                // TextColumn::make('curriculum_name')
+                //     ->searchable()
+                //     ->label('Curriculum Name')
+                //     ->limit(40)
+                //     ->tooltip(function (TextColumn $column): ?string {
+                //         $state = $column->getState();
                  
-                        if (strlen($state) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-                        return $state;
-                    }),
+                //         if (strlen($state) <= $column->getCharacterLimit()) {
+                //             return null;
+                //         }
+                //         return $state;
+                //     }),
+                TextColumn::make('Course.descriptive_title')
+                    ->label('Descriptive Title')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
+                TextColumn::make('Course.course_code')
+                    ->searchable()
+                    // ->badge()
+                    // ->icon('heroicon-m-book-open')
+                    // ->color(Color::Cyan)
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
+                TextColumn::make('Course.course_unit')
+                    ->searchable()
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->limitList(3)
+                    ->expandableLimitedList(),
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
@@ -258,7 +285,7 @@ class CurriculumResource extends Resource
     {
         return [
             'index' => Pages\ListCurricula::route('/'),
-            //'create' => Pages\CreateCurriculum::route('/create'),
+            'create' => Pages\CreateCurriculum::route('/create'),
             'view' => Pages\ViewCurriculum::route('/{record}'),
             'edit' => Pages\EditCurriculum::route('/{record}/edit'),
         ];

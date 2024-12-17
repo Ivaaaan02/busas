@@ -44,7 +44,8 @@ class AcadYearResource extends Resource
                         TextInput::make('year')
                             ->label('Academic Year')
                             ->required()
-                            ->maxLength(11),
+                            ->maxLength(11)
+                            ->unique(),
                         DatePicker::make('start_date')
                             ->required()
                             ->native(false)

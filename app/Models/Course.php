@@ -43,8 +43,7 @@ class Course extends Model
         return $this->belongsTo(ProgramMajor::class);
     }
 
-    public function Curriculum()
-    {
+    public function curriculum(){
         return $this->belongsTo(Curriculum::class, 'curriculum_id');
     }
 }

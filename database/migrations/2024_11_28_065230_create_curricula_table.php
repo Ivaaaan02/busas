@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('acad_term_id')->constrained('acad_terms');
             $table->foreignId('program_id')->constrained('programs');
             $table->foreignId('program_major_id')->nullable()->constrained('program_majors');
-            $table->string('curriculum_name');
+            $table->string('curriculum_name')->unique();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();

@@ -45,6 +45,6 @@ class Curriculum extends Model
     }
 
     public function course() {
-        return $this->hasMany(Course::class,'course_id');
+        return $this->hasMany(Course::class);
     }
 }

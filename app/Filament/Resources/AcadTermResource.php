@@ -67,7 +67,8 @@ class AcadTermResource extends Resource
                                 'Summer' => 'Summer',
                                 'Mid Year' => 'Mid Year', 
                             ])
-                            ->required(),
+                            ->required()
+                            ->unique(),
                     ])->columns(2)
             ]);
     }

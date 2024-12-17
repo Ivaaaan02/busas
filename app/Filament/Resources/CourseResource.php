@@ -80,20 +80,21 @@ class CourseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('Curriculum.curriculum_name')
             ->columns([
-                TextColumn::make('curriculum.curriculum_name')
-                    ->label('Curriculum')
-                    ->weight(FontWeight::Medium)
-                    ->limit(40)
-                    ->tooltip(function (TextColumn $column): ?string {
-                        $state = $column->getState();
+                // TextColumn::make('curriculum.curriculum_name')
+                //     ->label('Curriculum')
+                //     ->weight(FontWeight::Medium)
+                //     ->limit(40)
+                //     ->tooltip(function (TextColumn $column): ?string {
+                //         $state = $column->getState();
                  
-                        if (strlen($state) <= $column->getCharacterLimit()) {
-                            return null;
-                        }
-                        return $state;
-                    })
-                    ->sortable(),
+                //         if (strlen($state) <= $column->getCharacterLimit()) {
+                //             return null;
+                //         }
+                //         return $state;
+                //     })
+                //     ->sortable(),
                 TextColumn::make('descriptive_title')
                     ->label('Descriptive Title')
                     ->searchable(),

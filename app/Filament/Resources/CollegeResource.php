@@ -47,7 +47,8 @@ class CollegeResource extends Resource
                         ->relationship(name: 'Campus', titleAttribute: 'campus_name'),
                     TextInput::make('college_name')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->unique(),
                     Select::make('college_address')
                         ->required()
                         ->options([

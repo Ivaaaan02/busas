@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('acad_terms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('acad_year_id')->constrained('acad_years');
-            $table->string('acad_term', 50);
+            $table->string('acad_term', 50)->unique();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
