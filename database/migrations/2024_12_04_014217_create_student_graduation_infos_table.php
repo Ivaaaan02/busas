@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students');
             $table->date('graduation_date');
+            $table->string('degree_attained');
+            $table->string('date_attended');
             $table->string('board_approval');
             $table->string('latin_honor', 100)->nullable();
             $table->decimal('gwa', 5, 4);

@@ -35,6 +35,11 @@ class Student extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function campus()
+    {
+        return $this->hasOneThrough(Campus::class, Program::class, 'id', 'id', 'program_id', 'campus_id');
+    }
+
     public function StudentRegistrationInfo() {
         return $this->hasMany(StudentRegistrationInfo::class);
     }

@@ -191,7 +191,17 @@ class StudentResource extends Resource
                         ->label('Student Name')
                         ->searchable()
                         ->weight(FontWeight::Medium),
+                    TextColumn::make('date_of_birth')
+                        ->date()
+                        ->sortable(),
                     TextColumn::make('Campus.campus_name')
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('Campus.campus_address')
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('AcadYear.start_date_end_date')
+                        ->date()
                         ->sortable()
                         ->searchable(),
                     TextColumn::make('program.program_name')
@@ -206,9 +216,6 @@ class StudentResource extends Resource
                     TextColumn::make('place_of_birth')
                         ->searchable()
                         ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('date_of_birth')
-                        ->date()
-                        ->sortable(),
                         TextColumn::make('created_at')
                         ->dateTime()
                         ->sortable()
