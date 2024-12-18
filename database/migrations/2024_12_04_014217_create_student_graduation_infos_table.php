@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('graduation_date');
             $table->string('board_approval');
             $table->string('latin_honor', 100)->nullable();
-            $table->string('nstp_no', 100);
             $table->decimal('gwa', 5, 4);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

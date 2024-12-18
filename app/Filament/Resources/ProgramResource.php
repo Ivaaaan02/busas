@@ -134,7 +134,7 @@ class ProgramResource extends Resource
                     ->badge()
                     ->color(Color::Orange),
                 TextColumn::make('ProgramMajor.program_major_name')
-                ->label('Program Major Name')
+                    ->label('Program Major Name')
                     ->searchable()
                     ->listWithLineBreaks()
                     ->bulleted()

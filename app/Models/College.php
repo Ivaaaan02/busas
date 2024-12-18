@@ -17,7 +17,6 @@ class College extends Model
 
     protected $fillable = [
         'college_name',
-        'college_address',
         'campus_id',
         'created_by',
         'updated_by',

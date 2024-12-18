@@ -22,12 +22,18 @@ class Student extends Model
         'suffix',
         'program_id',
         'sex',
+        'nstp_no',
         'address',
         'place_of_birth',
         'date_of_birth',
         'created_by',
         'updated_by',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
     public function StudentRegistrationInfo() {
         return $this->hasMany(StudentRegistrationInfo::class);
@@ -39,5 +45,10 @@ class Student extends Model
 
     public function Program(){
         return $this->belongsTo(Program::class, 'program_id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->middle_name . ' ' .  $this->last_name . ' ' . $this->suffix;
     }
 }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained('programs');
             $table->string('suffix', 10)->nullable();
             $table->string('sex', 1);
+            $table->string('nstp_no', 100);
             $table->string('address');
             $table->string('place_of_birth')->nullable();
             $table->date('date_of_birth')->nullable();

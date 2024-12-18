@@ -19,6 +19,7 @@ class Campus extends Model
 
     protected $fillable = [
         'campus_name',
+        'campus_address',
         'isSatelliteCampus',
         'created_by',
         'updated_by',

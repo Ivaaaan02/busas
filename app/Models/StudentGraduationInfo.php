@@ -19,7 +19,6 @@ class StudentGraduationInfo extends Model
         'graduation_date',
         'board_approval',
         'latin_honor',
-        'nstp_no',
         'gwa',
         'student_id',
         'created_by',

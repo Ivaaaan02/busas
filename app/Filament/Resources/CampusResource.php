@@ -56,6 +56,17 @@ class CampusResource extends Resource
                             }
                         })
                         ->unique(),
+                    Select::make('campus_address')
+                        ->label('Campus Address')
+                        ->required()
+                        ->options([
+                            'Legazpi City' => 'Legazpi City',
+                            'Daraga, Albay' => 'Daraga, Albay',
+                            'Guinobatan, Albay' => 'Guinobatan, Albay',
+                            'Polangui, Albay' => 'Polangui, Albay',
+                            'Tabaco City' => 'Tabaco City',
+                            'Gubat, Sorsogon' => 'Gubat, Sorsogon',
+                        ]),
                     Toggle::make('isSatelliteCampus')
                         ->label('Satellite Campus')
                         ->required()
@@ -88,17 +99,6 @@ class CampusResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(),
-                            Select::make('college_address')
-                                ->label('College Address')
-                                ->required()
-                                ->options([
-                                    'Legazpi City' => 'Legazpi City',
-                                    'Daraga, Albay' => 'Daraga, Albay',
-                                    'Guinobatan, Albay' => 'Guinobatan, Albay',
-                                    'Polangui, Albay' => 'Polangui, Albay',
-                                    'Tabaco City' => 'Tabaco City',
-                                    'Gubat, Sorsogon' => 'Gubat, Sorsogon',
-                                ])
                             ])
                         ->columnSpanFull(),
                 ])->columns(2)
@@ -114,6 +114,10 @@ class CampusResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight(FontWeight::Medium),
+                TextColumn::make('campus_address')
+                    ->label('Campus Address')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('isSatelliteCampus')
                     ->label('Satellite Campus')
                     ->badge()
@@ -143,14 +147,6 @@ class CampusResource extends Resource
                     ->sortable(),
                 TextColumn::make('College.college_name')
                     ->label('College Name')
-                    ->searchable()
-                    ->sortable()
-                    ->listWithLineBreaks()
-                    ->bulleted()
-                    ->limitList(3)
-                    ->expandableLimitedList(),
-                TextColumn::make('College.college_address')
-                    ->label('College Address')
                     ->searchable()
                     ->sortable()
                     ->listWithLineBreaks()

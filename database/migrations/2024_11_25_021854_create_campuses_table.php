@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('campuses', function (Blueprint $table) {
             $table->id();
             $table->string('campus_name')->unique();
+            $table->string('campus_address');
             $table->boolean('isSatelliteCampus');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

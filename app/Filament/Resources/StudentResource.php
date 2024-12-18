@@ -21,7 +21,10 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -101,6 +104,9 @@ class StudentResource extends Resource
                             ->options(fn (callable $get) => 
                                 ProgramMajor::where('program_id', $get('program_id'))->pluck('program_major_name', 'id')
                             ),
+                        TextInput::make('nstp_no')
+                            ->required()
+                            ->maxLength(100),
                         TextInput::make('address')
                             ->required()
                             ->maxLength(255),
@@ -167,9 +173,6 @@ class StudentResource extends Resource
                                         'Outstanding Graduate' => 'Outstanding Graduate',
                                         'Most Outstanding Graduate' => 'Most Outstanding Graduate',
                                     ]),
-                                TextInput::make('nstp_no')
-                                    ->required()
-                                    ->maxLength(100),
                                 TextInput::make('gwa')
                                     ->required()
                                     ->numeric()
@@ -184,50 +187,48 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('last_name')
-                    ->searchable(),
-                TextColumn::make('first_name')
-                    ->searchable(),
-                TextColumn::make('middle_name')
-                    ->searchable(),
-                TextColumn::make('suffix')
-                    ->searchable(),
-                TextColumn::make('sex')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('program.program_name')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('program_major.program_major_name')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('address')
-                    ->searchable(),
-                TextColumn::make('place_of_birth')
-                    ->searchable(),
-                TextColumn::make('date_of_birth')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('full_name')
+                        ->label('Student Name')
+                        ->searchable()
+                        ->weight(FontWeight::Medium),
+                    TextColumn::make('Campus.campus_name')
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('program.program_name')
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('program_major.program_major_name')
+                        ->sortable()
+                        ->searchable()
+                        ->default('N/A'),
+                    TextColumn::make('address')
+                        ->searchable(),
+                    TextColumn::make('place_of_birth')
+                        ->searchable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('date_of_birth')
+                        ->date()
+                        ->sortable(),
+                        TextColumn::make('created_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('updated_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('deleted_at')
+                        ->dateTime()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('user.name')
+                        ->numeric()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('user.name')
+                        ->numeric()
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
