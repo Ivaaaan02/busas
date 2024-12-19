@@ -42,8 +42,8 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'System Management',
                 'Campus Management',
-                'Academic Management',
                 'Program Management',
+                'Academic Management',
                 'Student Management',
                 NavigationGroup::make('Campus')
                     ->icon('heroicon-o-building-library'),

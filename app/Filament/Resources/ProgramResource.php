@@ -162,7 +162,7 @@ class ProgramResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Created By')
                     ->icon('heroicon-m-user')
                     ->badge()

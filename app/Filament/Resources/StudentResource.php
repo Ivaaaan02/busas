@@ -21,6 +21,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Collection;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -163,6 +164,16 @@ class StudentResource extends Resource
                                 TextInput::make('board_approval')
                                     ->required()
                                     ->maxLength(255),
+                                Select::make('degree_attained')
+                                    ->required()
+                                    ->options([
+                                        "Bachelor's degree" => "Bachelor's degree",
+                                        "Master's degree" => "Master's degree",
+                                        'Doctorate degree' => 'Doctorate degree',
+                                    ]),
+                                TextInput::make('date_attended')
+                                    ->required()
+                                    ->maxLength(255),
                                 Select::make('latin_honor')
                                     ->label('Latin Honor')
                                     ->options([
@@ -193,25 +204,74 @@ class StudentResource extends Resource
                         ->weight(FontWeight::Medium),
                     TextColumn::make('date_of_birth')
                         ->date()
-                        ->sortable(),
+                        ->sortable()
+                        ->icon('heroicon-m-calendar')
+                        ->iconColor(Color::Emerald),
                     TextColumn::make('Campus.campus_name')
                         ->sortable()
-                        ->searchable(),
+                        ->searchable()
+                        ->badge(),
+                        // ->color(function ($record, $state) {
+                        //     if ($record->Campus->campus_name === 'Main Campus')
+                        //         return Color::Emerald;
+                        //     elseif ($record->Campus->campus_name === 'Daraga Campus')
+                        //         return Color::Amber;
+                        //     elseif ($record->CAMPUS->campus_name === 'East Campus')
+                        //         return Color::Cyan;
+                        //     else
+                        //         return Color::Rose;
+                        // }),
                     TextColumn::make('Campus.campus_address')
+                    ->label('Campus Address')
+                        ->sortable()
+                        ->searchable()
+                        ->icon('heroicon-m-map-pin')
+                        ->iconColor(Color::Red),
+                    TextColumn::make('StudentGraduationInfo.date_attended')
+                        ->label('Date Attended')
                         ->sortable()
                         ->searchable(),
-                    TextColumn::make('AcadYear.start_date_end_date')
-                        ->date()
+                    TextColumn::make('StudentGraduationInfo.degree_attained')
+                        ->label('Degree Attained')
                         ->sortable()
-                        ->searchable(),
+                        ->searchable()
+                        ->badge()
+                        ->color(function ($record, $state) {
+                            if ($record->degree_attained === "Bachelor's degree")
+                                return Color::Yellow;
+                            elseif ($record->degree_attained === "Master's degree")
+                                return Color::Blue;
+                            elseif ($record->degree_attained === "Doctorate degree")
+                                return Color::Blue;
+                            else
+                                return Color::Rose;
+                        }),
                     TextColumn::make('program.program_name')
                         ->sortable()
                         ->searchable(),
                     TextColumn::make('program_major.program_major_name')
                         ->sortable()
                         ->searchable()
+                        ->badge()
+                        ->color(Color::Orange)
                         ->default('N/A'),
-                    TextColumn::make('address')
+                    TextColumn::make('StudentGraduationInfo.graduation_date')
+                        ->label('Graduation Date')
+                        ->date()
+                        ->icon('heroicon-m-calendar')
+                        ->iconColor(Color::Emerald)
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('StudentGraduationInfo.board_approval')
+                        ->label('Board Approval')
+                        ->sortable()
+                        ->searchable(),
+                    TextColumn::make('StudentGraduationInfo.latin_honor')
+                        ->label('Honor')
+                        ->icon('heroicon-m-academic-cap')
+                        ->badge()
+                        ->color(Color::Sky)
+                        ->sortable()
                         ->searchable(),
                     TextColumn::make('place_of_birth')
                         ->searchable()

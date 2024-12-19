@@ -17,6 +17,8 @@ class StudentGraduationInfo extends Model
 
     protected $fillable = [
         'graduation_date',
+        'degree_attained',
+        'date_attended',
         'board_approval',
         'latin_honor',
         'gwa',
