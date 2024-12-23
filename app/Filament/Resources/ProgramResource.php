@@ -85,7 +85,7 @@ class ProgramResource extends Resource
                                         ]),
                             ]),
                             Tab::make('Program Major Information')
-                                ->icon('heroicon-o-book-open')
+                                ->icon('heroicon-o-academic-cap')
                                 ->schema([
                                     Repeater::make('program_majors')
                                         ->relationship('ProgramMajor')
@@ -192,11 +192,15 @@ class ProgramResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(), 
+                ])
+                ->link()
+                ->label('Actions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

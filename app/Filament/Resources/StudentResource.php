@@ -214,6 +214,37 @@ class StudentResource extends Resource
                                     ->columns(2)
                                     ->addActionLabel('Add Graduation Information'),
                             ]),
+                            Tab::make('Student Records Information')
+                            ->icon('heroicon-o-book-open')
+                            ->schema([
+                                Repeater::make('student_records')
+                                    ->label('')
+                                    ->relationship('StudentRecord')
+                                    ->schema([
+                                        Select::make('curriculum_id')
+                                            ->label('Curriculum')
+                                            ->relationship('curriculum',  'curriculum_name')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload(),
+                                        Select::make('curriculum_id')
+                                            ->label('Curriculum'),
+                                        // Select::make('course_id')
+                                        //     ->label('Course')
+                                        //     ->options(fn (Get $get): Collection => Course::where('curriculum_id', $get('curriculum_id'))->pluck('descriptive_title', 'id'))
+                                        //     ->searchable()
+                                        //     ->preload(),
+                                        TextInput::make('final_grade')
+                                            ->required()
+                                            ->maxLength(3),
+                                        TextInput::make('removal_rating')
+                                            ->required()
+                                            ->numeric(),
+
+                                ])
+                                ->columns(2)
+                                ->addActionLabel("Add Student's Record"),
+]),
                 ])->columnSpanFull()
             ]);
     }
@@ -303,16 +334,34 @@ class StudentResource extends Resource
                         ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
+
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(), 
+                ])
+                ->link()
+                ->label('Actions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 
@@ -327,7 +376,7 @@ class StudentResource extends Resource
     {
         return [
             'index' => Pages\ListStudents::route('/'),
-            //'create' => Pages\CreateStudent::route('/create'),
+            'create' => Pages\CreateStudent::route('/create'),
             'view' => Pages\ViewStudent::route('/{record}'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];

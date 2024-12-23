@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Filters\RangeFilter;
+use Filament\Actions\ActionGroup;
 use Filament\Support\Enums\FontWeight;
 
 class AcadYearResource extends Resource
@@ -117,11 +118,15 @@ class AcadYearResource extends Resource
             ])
 
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(), 
+                ])
+                ->link()
+                ->label('Actions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
