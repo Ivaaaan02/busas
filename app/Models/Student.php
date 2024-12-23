@@ -22,7 +22,6 @@ class Student extends Model
         'suffix',
         'program_id',
         'sex',
-        'nstp_no',
         'address',
         'place_of_birth',
         'date_of_birth',
@@ -40,12 +39,21 @@ class Student extends Model
         return $this->hasOneThrough(Campus::class, Program::class, 'id', 'id', 'program_id', 'campus_id');
     }
 
+    public function course()
+    {
+        return $this->hasOneThrough(Course::class, Curriculum::class, 'id', 'id', 'course_id', 'curriculum_id');
+    }
+
     public function StudentRegistrationInfo() {
-        return $this->hasMany(StudentRegistrationInfo::class);
+        return $this->hasOne(StudentRegistrationInfo::class);
     }
 
     public function StudentGraduationInfo() {
         return $this->hasMany(StudentGraduationInfo::class);
+    }
+
+    public function studentRecord() {
+        return $this->hasMany(StudentRecord::class);
     }
 
     public function Program(){

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('category', 100);
             $table->string('last_school_attended');
             $table->string('date_semester_admitted');
+            $table->string('nstp_no', 100);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();

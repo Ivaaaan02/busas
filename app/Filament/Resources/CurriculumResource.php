@@ -12,6 +12,7 @@ use App\Models\College;
 use App\Models\ProgramMajor;
 use App\Models\Program;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -22,6 +23,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
@@ -49,76 +52,85 @@ class CurriculumResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Curriculum Information')
-                    ->description("Please put the curriculum's details here.")
-                    ->schema([
-                        Select::make('acad_year_id')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->label('Academic Year')
-                            ->options(AcadYear::pluck('year', 'id'))
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-                        Select::make('acad_term_id')
-                            ->label('Academic Term')
-                            ->options(fn (Get $get): Collection => AcadTerm::query()
-                                ->where('acad_year_id', $get('acad_year_id'))
-                                ->pluck('acad_term', 'id'))
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-                        Select::make('campus_id')
-                        ->required()
-                        ->searchable()
-                        ->preload()
-                        ->live()
-                        ->label('Campus Name')
-                        ->options(Campus::pluck('campus_name', 'id'))
-                            ->afterStateUpdated(function (Set $set, Get $get) {
-                                $set('college_id', null);
-                                $set('program_id', null);
-                                $set('program_major_id', null);
-                                self::updateCurriculumName($set, $get);
-                            }),
-                        Select::make('college_id')
-                            ->label('College')
-                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-
-                            Select::make('program_id')
-                            ->label('Program')
-                            ->options(fn (Get $get): Collection => Program::query()
-                                ->where('college_id', $get('college_id'))
-                                ->orWhere('campus_id', $get('campus_id'))
-                                ->pluck('program_name', 'id'))
-                            ->required()
-                            ->searchable() 
-                            ->preload()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-                        Select::make('program_major_id')
-                            ->label('Program Major')
-                            ->options(fn (Get $get): Collection => ProgramMajor::query()
-                                ->where('program_id', $get('program_id'))
-                                ->pluck('program_major_name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
-                        TextInput::make('curriculum_name')
-                            ->required()
-                            ->maxLength(255)
-                            ->disabled()
-                            ->unique(),
-                        Hidden::make('curriculum_name')
-                    ])->columns(2),
-                Section::make("Course's Information")
-                    ->description("Please put the curriculum's details here.")
-                    ->schema([
-                        Repeater::make('courses')
+                Tabs::make('Tabs')
+                    ->tabs([
+                        Tab::make('Curriculum Information')
+                            ->schema([
+                                Fieldset::make('Academic Term Details')
+                                ->schema([
+                                    Select::make('acad_year_id')
+                                        ->required()
+                                        ->searchable()
+                                        ->preload()
+                                        ->live()
+                                        ->label('Academic Year')
+                                        ->options(AcadYear::pluck('year', 'id'))
+                                        ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                                    Select::make('acad_term_id')
+                                        ->label('Academic Term')
+                                        ->options(fn (Get $get): Collection => AcadTerm::query()
+                                            ->where('acad_year_id', $get('acad_year_id'))
+                                            ->pluck('acad_term', 'id'))
+                                        ->required()
+                                        ->searchable()
+                                        ->preload()
+                                        ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                                ]),
+                                Fieldset::make('Program Details')
+                                ->schema([
+                                    Select::make('campus_id')
+                                        ->required()
+                                        ->searchable()
+                                        ->preload()
+                                        ->live()
+                                        ->label('Campus Name')
+                                        ->options(Campus::pluck('campus_name', 'id'))
+                                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                                $set('college_id', null);
+                                                $set('program_id', null);
+                                                $set('program_major_id', null);
+                                                self::updateCurriculumName($set, $get);
+                                            }),
+                                        Select::make('college_id')
+                                            ->label('College')
+                                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
+                                            ->searchable()
+                                            ->preload()
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                                        Select::make('program_id')
+                                            ->label('Program')
+                                            ->options(fn (Get $get): Collection => Program::query()
+                                                ->where('college_id', $get('college_id'))
+                                                ->orWhere('campus_id', $get('campus_id'))
+                                                ->pluck('program_name', 'id'))
+                                            ->required()
+                                            ->searchable() 
+                                            ->preload()
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                                        Select::make('program_major_id')
+                                            ->label('Program Major')
+                                            ->options(fn (Get $get): Collection => ProgramMajor::query()
+                                                ->where('program_id', $get('program_id'))
+                                                ->pluck('program_major_name', 'id'))
+                                            ->searchable()
+                                            ->preload()
+                                            ->afterStateUpdated(fn (Set $set, Get $get) => self::updateCurriculumName($set, $get)),
+                                ]),
+                                Fieldset::make('Curriculum Details')
+                                ->schema([
+                                    TextInput::make('curriculum_name')
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->disabled()
+                                        ->unique(),
+                                    Hidden::make('curriculum_name')
+                                ]),            
+                            ]),
+                            Tab::make('Course Information')
+                            ->schema([
+                                 Repeater::make('courses')
                             ->relationship('Course')
+                            ->label('')
                             ->schema([
                                 TextInput::make('descriptive_title')
                                     ->required()
@@ -129,8 +141,9 @@ class CurriculumResource extends Resource
                                 TextInput::make('course_unit')
                                     ->required()
                                     ->maxLength(5),
-                                ])->columns(3)
-                    ])
+                                ])
+                            ]),
+                    ])->columnSpanFull(),
             ]);
     }
 

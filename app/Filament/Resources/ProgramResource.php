@@ -7,9 +7,12 @@ use App\Filament\Resources\ProgramResource\RelationManagers;
 use App\Models\Campus;
 use App\Models\College;
 use App\Models\Program;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -46,47 +49,58 @@ class ProgramResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Program Information')
-                    ->description("Please put the program's details here.")
-                    ->schema([
-                        Select::make('campus_id')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->label('Campus Name')
-                            ->options(Campus::pluck('campus_name', 'id'))
-                                ->afterStateUpdated(function (Set $set, Get $get) {
-                                    $set('college_id', null);
-                                    $set('program_id', null);
-                                    $set('program_major_id', null);
-                                }),
-                        Select::make('college_id')
-                            ->label('College')
-                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
-                            ->searchable()
-                            ->preload(),
-                        TextInput::make('program_name')
-                            ->required()
-                            ->maxLength(255),
-                        TextInput::make('program_abbreviation')
-                            ->required()
-                            ->maxLength(20),
-                    ])->columns(2),
-                Section::make('Program Major Information')
-                    ->description("Please put the program major's details here.")
-                    ->schema([
-                        Repeater::make('program_majors')
-                            ->relationship('ProgramMajor')
+                Tabs::make('Tabs')
+                    ->tabs([
+                        Tab::make('Program Information')
+                            ->icon('heroicon-o-book-open')
                             ->schema([
-                                TextInput::make('program_major_name')
-                                    ->required()
-                                    ->maxLength(255),
-                                TextInput::make('program_major_abbreviation')
-                                    ->required()
-                                    ->maxLength(20),
-                                ])
-                    ])
+                                Fieldset::make('Campus Details')
+                                    ->schema([
+                                        Select::make('campus_id')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->live()
+                                            ->label('Campus Name')
+                                            ->options(Campus::pluck('campus_name', 'id'))
+                                                ->afterStateUpdated(function (Set $set, Get $get) {
+                                                    $set('college_id', null);
+                                                    $set('program_id', null);
+                                                    $set('program_major_id', null);
+                                                }),
+                                        Select::make('college_id')
+                                            ->label('College')
+                                            ->options(fn (Get $get): Collection => College::where('campus_id', $get('campus_id'))->pluck('college_name', 'id'))
+                                            ->searchable()
+                                            ->preload(),
+                                    ]),
+                                    Fieldset::make('Program Details')
+                                        ->schema([
+                                            TextInput::make('program_name')
+                                            ->required()
+                                            ->maxLength(255),
+                                        TextInput::make('program_abbreviation')
+                                            ->required()
+                                            ->maxLength(20),
+                                        ]),
+                            ]),
+                            Tab::make('Program Major Information')
+                                ->icon('heroicon-o-book-open')
+                                ->schema([
+                                    Repeater::make('program_majors')
+                                        ->relationship('ProgramMajor')
+                                        ->label('')
+                                        ->schema([
+                                            TextInput::make('program_major_name')
+                                                ->required()
+                                                ->maxLength(255),
+                                            TextInput::make('program_major_abbreviation')
+                                                ->required()
+                                                ->maxLength(20),
+                                            ])
+                                ]),
+                        
+                    ])->columnSpanFull(),
                 ]);
     }
     public static function table(Table $table): Table

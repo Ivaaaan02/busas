@@ -20,6 +20,7 @@ class StudentRegistrationInfo extends Model
         'category',
         'last_school_attended',
         'date_semester_admitted',
+        'nstp_no',
         'student_id',
         'created_by',
         'updated_by',
